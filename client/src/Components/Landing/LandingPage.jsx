@@ -168,7 +168,7 @@ const LandingPage = () => {
                 : "bg-[#1A1A1A] text-white"
             } hover:opacity-90 transition-opacity flex items-center space-x-2 group`}
           >
-            <Link to="/journaling-alt">Start Journaling</Link>
+            <Link to="/login">Begin your Journey</Link>
             <ArrowRight
               size={16}
               className="group-hover:translate-x-1 transition-transform"

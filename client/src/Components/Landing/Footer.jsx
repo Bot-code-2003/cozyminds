@@ -27,12 +27,12 @@ const Footer = ({ darkMode }) => {
               </p>
             </div>
             <Link
-              to="/journaling-alt"
+              to="/login"
               className={`px-6 py-3 md:px-8 md:py-4 text-sm md:text-base ${
                 darkMode ? "bg-[#F4A261] text-black" : "bg-white text-black"
               } hover:opacity-90 transition-opacity whitespace-nowrap`}
             >
-              Start Journaling Now
+              Begin your Journey
             </Link>
           </div>
         </div>
