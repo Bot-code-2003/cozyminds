@@ -16,7 +16,7 @@ const CozyStory = () => {
   const [error, setError] = useState(null);
   const [animate, setAnimate] = useState(false);
 
-  // Default user data if nothing exists in localStorage
+  // Default user data if nothing exists in sessionStorage
   const defaultUserData = {
     id: "67e505f4aa1c2142b1168a5e",
     nickname: "admin",
@@ -31,17 +31,17 @@ const CozyStory = () => {
     lastVisited: "2025-03-26T18:30:00.000Z",
   };
 
-  // Load user data from localStorage when component mounts
+  // Load user data from sessionStorage when component mounts
   useEffect(() => {
     const loadUserData = () => {
       try {
-        const storedUser = localStorage.getItem("user");
+        const storedUser = sessionStorage.getItem("user");
         if (storedUser) {
           setUserData(JSON.parse(storedUser));
         } else {
           // If no data exists, set default data and store it
           setUserData(defaultUserData);
-          localStorage.setItem("user", JSON.stringify(defaultUserData));
+          sessionStorage.setItem("user", JSON.stringify(defaultUserData));
         }
         setLoading(false);
 

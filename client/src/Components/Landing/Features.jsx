@@ -127,7 +127,7 @@ const Features = () => {
   ];
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
     console.log("Stored User:", storedUser);
 
     if (storedUser) {

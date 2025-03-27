@@ -64,7 +64,7 @@ const ProfileSettings = () => {
       setError(null);
 
       try {
-        const user = JSON.parse(localStorage.getItem("user") || "null");
+        const user = JSON.parse(sessionStorage.getItem("user") || "null");
 
         if (!user) {
           navigate("/login");
@@ -135,7 +135,7 @@ const ProfileSettings = () => {
       await API.put(`/user/${userData.id}`, updatedUser);
 
       // Update local storage
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      sessionStorage.setItem("user", JSON.stringify(updatedUser));
       setUserData(updatedUser);
 
       setSuccess("Profile updated successfully!");
@@ -207,7 +207,7 @@ const ProfileSettings = () => {
     ) {
       try {
         await API.delete(`/user/${userData.id}`);
-        localStorage.removeItem("user");
+        sessionStorage.removeItem("user");
         navigate("/");
       } catch (err) {
         console.error("Error deleting account:", err);
@@ -221,7 +221,7 @@ const ProfileSettings = () => {
 
   // Logout
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     navigate("/");
   };
 

@@ -109,7 +109,7 @@ const DetailedMoodDistributions = () => {
       setError(null);
 
       try {
-        const user = JSON.parse(localStorage.getItem("user") || "null");
+        const user = JSON.parse(sessionStorage.getItem("user") || "null");
         setUserData(user);
 
         if (!user) {
@@ -234,7 +234,7 @@ const DetailedMoodDistributions = () => {
 
   // Logout
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     navigate("/");
   };
 

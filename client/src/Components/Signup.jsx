@@ -55,7 +55,7 @@ const Signup = () => {
       console.log("Signup successful:", response.data);
 
       // **Store user data in local storage (without password)**
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify({
           id: response.data.user._id, // Assuming backend returns the user object

@@ -62,7 +62,7 @@ const JournalingAlt = () => {
   useEffect(() => {
     const fetchExistingTags = async () => {
       try {
-        const userData = JSON.parse(localStorage.getItem("user"));
+        const userData = JSON.parse(sessionStorage.getItem("user"));
         if (!userData || !userData.id) return;
 
         const response = await API.get(`/journals/${userData.id}`);
@@ -124,8 +124,8 @@ const JournalingAlt = () => {
     setSaveError(null);
 
     try {
-      // Get user data from localStorage
-      const userData = JSON.parse(localStorage.getItem("user"));
+      // Get user data from sessionStorage
+      const userData = JSON.parse(sessionStorage.getItem("user"));
 
       if (!userData || !userData.id) {
         setSaveError("User not found. Please log in again.");

@@ -106,10 +106,10 @@ const Dashboard = () => {
 
   // Check if user should see streak modal (next day login)
   const shouldShowStreakModal = () => {
-    const lastVisit = localStorage.getItem("lastVisitDate");
+    const lastVisit = sessionStorage.getItem("lastVisitDate");
     if (!lastVisit) {
       // First visit, set today's date and don't show modal
-      localStorage.setItem("lastVisitDate", new Date().toDateString());
+      sessionStorage.setItem("lastVisitDate", new Date().toDateString());
       return false;
     }
 
@@ -124,7 +124,7 @@ const Dashboard = () => {
       currentDate.getFullYear() !== lastVisitDate.getFullYear();
 
     // Update last visit date
-    localStorage.setItem("lastVisitDate", today);
+    sessionStorage.setItem("lastVisitDate", today);
 
     return isNewDay;
   };
@@ -136,7 +136,7 @@ const Dashboard = () => {
       setError(null);
 
       try {
-        const user = JSON.parse(localStorage.getItem("user") || "null");
+        const user = JSON.parse(sessionStorage.getItem("user") || "null");
         setUserData(user);
 
         if (!user) {
@@ -225,7 +225,7 @@ const Dashboard = () => {
 
   // Logout
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     window.location.href = "/";
   };
 

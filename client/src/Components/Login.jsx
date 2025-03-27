@@ -33,7 +33,7 @@ const Login = () => {
 
       console.log("Login successful:", response.data);
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify({
           id: response.data.user._id, // Assuming backend returns the user object
