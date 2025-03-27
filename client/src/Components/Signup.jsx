@@ -64,6 +64,12 @@ const Signup = () => {
           age: response.data.user.age,
           gender: response.data.user.gender,
           subscribe: response.data.user.subscribe,
+          currentStreak: response.data.user.currentStreak,
+          longestStreak: response.data.user.longestStreak,
+          lastJournaled: response.data.user.lastJournaled,
+          storyVisitCount: response.data.user.storyVisitCount,
+          storiesCompleted: response.data.user.storiesCompleted,
+          lastVisited: response.data.user.lastVisited,
         })
       );
 

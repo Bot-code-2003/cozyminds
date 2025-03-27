@@ -39,6 +39,8 @@ app.post("/signup", async (req, res) => {
       age,
       gender,
       subscribe,
+      storyVisitCount: 0,
+      storiesCompleted: 0,
     });
     await newUser.save();
 
@@ -63,6 +65,9 @@ app.post("/login", async (req, res) => {
     if (user.password !== password) {
       return res.status(401).json({ message: "Incorrect password." });
     }
+
+    // Update story visit count on login (once per day)
+    await updateStoryVisit(user._id);
 
     res.status(200).json({ message: "Login successful!", user });
   } catch (error) {
@@ -102,8 +107,8 @@ app.post("/saveJournal", async (req, res) => {
 
     await newJournal.save();
 
-    // Update user streak
-    await updateUserStreak(userId, newJournal.date); // 👈 pass actual journal date
+    // Update user streak (independent from story)
+    await updateUserStreak(userId, newJournal.date);
 
     res.status(201).json({
       message: "Journal entry saved successfully!",
@@ -117,6 +122,8 @@ app.post("/saveJournal", async (req, res) => {
     });
   }
 });
+
+// Update user streak (independent from story)
 async function updateUserStreak(userId, journalDate) {
   try {
     const user = await User.findById(userId);
@@ -161,6 +168,51 @@ async function updateUserStreak(userId, journalDate) {
     });
   } catch (error) {
     console.error("Error updating streak:", error);
+  }
+}
+
+// Update story visit (independent from streak)
+async function updateStoryVisit(userId) {
+  try {
+    const user = await User.findById(userId);
+    if (!user) return;
+
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); // normalize
+
+    const lastVisitedDate = user.lastVisited
+      ? new Date(user.lastVisited)
+      : null;
+
+    if (lastVisitedDate) {
+      lastVisitedDate.setHours(0, 0, 0, 0); // normalize
+    }
+
+    // If already visited on the same day → no visit count change
+    if (
+      lastVisitedDate &&
+      lastVisitedDate.getTime() === currentDate.getTime()
+    ) {
+      return;
+    }
+
+    // Increment visit count
+    let storyVisitCount = (user.storyVisitCount || 0) + 1;
+    let storiesCompleted = user.storiesCompleted || 0;
+
+    // Check if story is completed (30 visits)
+    if (storyVisitCount >= 30) {
+      storiesCompleted += 1;
+      storyVisitCount = 0; // Reset for next story
+    }
+
+    await User.findByIdAndUpdate(userId, {
+      storyVisitCount,
+      storiesCompleted,
+      lastVisited: currentDate,
+    });
+  } catch (error) {
+    console.error("Error updating story visit:", error);
   }
 }
 
@@ -273,6 +325,36 @@ app.delete("/journal/:id", async (req, res) => {
   }
 });
 
+// 🔥 Get user data
+app.get("/user/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate user ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID format." });
+    }
+
+    // Find the user
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Update story visit count on user data fetch (once per day)
+    await updateStoryVisit(id);
+
+    // Get updated user data after story visit update
+    const updatedUser = await User.findById(id);
+
+    res.status(200).json({ user: updatedUser });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+});
+
 // 🔥 Update user profile
 app.put("/user/:id", async (req, res) => {
   try {
@@ -286,6 +368,9 @@ app.put("/user/:id", async (req, res) => {
       currentStreak,
       longestStreak,
       lastJournaled,
+      storyVisitCount,
+      storiesCompleted,
+      lastVisited,
     } = req.body;
 
     // Validate user ID
@@ -313,6 +398,11 @@ app.put("/user/:id", async (req, res) => {
     if (currentStreak !== undefined) updateData.currentStreak = currentStreak;
     if (longestStreak !== undefined) updateData.longestStreak = longestStreak;
     if (lastJournaled) updateData.lastJournaled = lastJournaled;
+    if (storyVisitCount !== undefined)
+      updateData.storyVisitCount = storyVisitCount;
+    if (storiesCompleted !== undefined)
+      updateData.storiesCompleted = storiesCompleted;
+    if (lastVisited) updateData.lastVisited = lastVisited;
 
     // Find and update the user
     const updatedUser = await User.findByIdAndUpdate(id, updateData, {

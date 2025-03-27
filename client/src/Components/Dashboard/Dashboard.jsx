@@ -24,7 +24,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import MoodDistribution from "./MoodDistribution";
 import StreakCard from "../StreakCard";
-// import StreakCalendarModal from "./StreakCalendarModal";
+import CozyStory from "./CozyStory";
 
 const Dashboard = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -319,13 +319,6 @@ const Dashboard = () => {
           : "bg-[#F8F1E9] text-[#1A1A1A]"
       } font-sans transition-colors duration-300`}
     >
-      {/* Streak Calendar Modal */}
-      {/* <StreakCalendarModal
-        user={userData}
-        isVisible={showStreakModal}
-        onClose={() => setShowStreakModal(false)}
-      /> */}
-
       {/* Top navigation bar */}
       <nav
         className={`w-full ${
@@ -395,7 +388,7 @@ const Dashboard = () => {
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome section */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">
             Welcome back, {userData?.nickname || "User"}
           </h1>
@@ -405,7 +398,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Link
             to="/journaling-alt"
             className={`flex items-center p-6 ${
@@ -467,53 +460,68 @@ const Dashboard = () => {
         </div>
 
         {/* Stats cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div
-            className={`${
-              darkMode ? "bg-[#2A2A2A]" : "bg-white"
-            } shadow-lg p-6`}
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-sm opacity-70 mb-1">Total Entries</h3>
-                <p className="text-3xl font-bold">{journalEntries.length}</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+          {/* First Column: 2 Rows */}
+          <div className="grid grid-rows-2 gap-3">
+            {/* First Row: Word Count and Total Entries */}
+            <div className="grid grid-cols-2 gap-3">
+              <div
+                className={`${
+                  darkMode ? "bg-[#2A2A2A]" : "bg-white"
+                } shadow-lg p-6`}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-sm opacity-70 mb-1">Word Count</h3>
+                    <p className="text-3xl font-bold">
+                      {wordCountStats.total.toLocaleString()}
+                    </p>
+                  </div>
+                  <BarChart2 size={24} className="opacity-70" />
+                </div>
+                <div className="flex justify-between text-sm opacity-70">
+                  <span>Average: {wordCountStats.average} words</span>
+                  <span>Max: {wordCountStats.max} words</span>
+                </div>
               </div>
-              <Calendar size={24} className="opacity-70" />
+              <div
+                className={`${
+                  darkMode ? "bg-[#2A2A2A]" : "bg-white"
+                } shadow-lg p-6`}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-sm opacity-70 mb-1">Total Entries</h3>
+                    <p className="text-3xl font-bold">
+                      {journalEntries.length}
+                    </p>
+                  </div>
+                  <Calendar size={24} className="opacity-70" />
+                </div>
+                <div className="flex justify-between text-sm opacity-70">
+                  <span>
+                    First Entry:{" "}
+                    {journalEntries.length
+                      ? formatDate(
+                          journalEntries.sort(
+                            (a, b) => new Date(a.date) - new Date(b.date)
+                          )[0].date
+                        )
+                      : "N/A"}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm opacity-70">
-              <span>
-                First Entry:{" "}
-                {journalEntries.length
-                  ? formatDate(
-                      journalEntries.sort(
-                        (a, b) => new Date(a.date) - new Date(b.date)
-                      )[0].date
-                    )
-                  : "N/A"}
-              </span>
+            {/* Second Row: StreakCard */}
+            <div>
+              <StreakCard />
             </div>
           </div>
 
-          <div
-            className={`${
-              darkMode ? "bg-[#2A2A2A]" : "bg-white"
-            } shadow-lg p-6`}
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-sm opacity-70 mb-1">Word Count</h3>
-                <p className="text-3xl font-bold">
-                  {wordCountStats.total.toLocaleString()}
-                </p>
-              </div>
-              <BarChart2 size={24} className="opacity-70" />
-            </div>
-            <div className="flex justify-between text-sm opacity-70">
-              <span>Average: {wordCountStats.average} words</span>
-              <span>Max: {wordCountStats.max} words</span>
-            </div>
+          {/* Second and Third Columns: CozyStory */}
+          <div className="md:col-span-2 row-span-2s">
+            <CozyStory />
           </div>
-          <StreakCard />
         </div>
 
         {/* Mood Distribution Chart */}
@@ -689,7 +697,7 @@ const Dashboard = () => {
 
         {/* Journal entries */}
         {!isLoading && !error && (
-          <div className="mb-8">
+          <div className="mb-6">
             <h2 className="text-xl font-bold mb-4">
               Recent Entries ({filteredEntries.length})
             </h2>
@@ -804,7 +812,7 @@ const Dashboard = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-6">
             <div className="flex items-center">
               <button
                 onClick={() => paginate(Math.max(1, currentPage - 1))}

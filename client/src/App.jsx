@@ -14,6 +14,7 @@ import JournalEntries from "./Components/JournalEntries";
 import ProfileSettings from "./Components/ProfileSettings";
 import Features from "./Components/Landing/Features";
 import DetailedMoodDistributions from "./Components/Dashboard/DetailedMoodDistributions";
+import Library from "./Components/Library";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -50,6 +51,7 @@ const App = () => {
             path="/mood-distributions"
             element={<DetailedMoodDistributions />}
           />
+          <Route path="/library" element={<Library />} />
         </Routes>
       </div>
     </ThemeProvider>

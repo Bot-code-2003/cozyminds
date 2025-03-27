@@ -20,6 +20,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/ThemeContext";
 import StreakCard from "./StreakCard";
+import CozyStory from "./Dashboard/CozyStory";
 
 const ProfileSettings = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -371,8 +372,8 @@ const ProfileSettings = () => {
             </button>
           </div>
         )}
-
-        <StreakCard />
+        <CozyStory />
+        {/* <StreakCard /> */}
 
         {!isLoading && userData && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

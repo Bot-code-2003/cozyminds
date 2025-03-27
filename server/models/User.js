@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Streak tracking (independent from story)
     currentStreak: {
       type: Number,
       default: 0,
@@ -48,6 +49,18 @@ const userSchema = new mongoose.Schema(
     longestStreak: {
       type: Number,
       default: 0,
+    },
+    // Story tracking (independent from streak)
+    storyVisitCount: {
+      type: Number,
+      default: 0,
+    },
+    storiesCompleted: {
+      type: Number,
+      default: 0,
+    },
+    lastVisited: {
+      type: Date,
     },
   },
   { timestamps: true }

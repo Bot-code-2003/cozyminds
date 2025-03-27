@@ -45,6 +45,9 @@ const Login = () => {
           currentStreak: response.data.user.currentStreak,
           longestStreak: response.data.user.longestStreak,
           lastJournaled: response.data.user.lastJournaled,
+          storyVisitCount: response.data.user.storyVisitCount,
+          storiesCompleted: response.data.user.storiesCompleted,
+          lastVisited: response.data.user.lastVisited,
         })
       );
       window.location.href = "/";
