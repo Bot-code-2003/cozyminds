@@ -132,7 +132,7 @@ const CozyStory = () => {
 
   return (
     <div
-      className={`p-6 border transition-all duration-500 shadow-md ${
+      className={`p-6 border transition-all duration-500 h-full shadow-md ${
         darkMode
           ? "bg-[#2A2A2A] border-[#333333] text-[#F8F1E9]"
           : "bg-[#FFFFFF] border-[#F0E6DD] text-[#5C4B3F]"
