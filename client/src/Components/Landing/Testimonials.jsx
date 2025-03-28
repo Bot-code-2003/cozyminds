@@ -126,7 +126,7 @@ const Testimonials = ({ darkMode }) => {
       </div>
 
       {/* Call to action */}
-      <div className="text-center mt-16">
+      {/* <div className="text-center mt-16">
         <Link
           to="/testimonials"
           className="inline-flex items-center gap-2 text-[#F4A261] hover:underline group"
@@ -137,7 +137,7 @@ const Testimonials = ({ darkMode }) => {
             className="group-hover:translate-x-1 transition-transform"
           />
         </Link>
-      </div>
+      </div> */}
     </section>
   );
 };

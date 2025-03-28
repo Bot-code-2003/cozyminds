@@ -8,12 +8,14 @@ import {
   Wand,
   SunMedium,
   ArrowRight,
+  PawPrint,
+  CloudRainWind,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const CozyStoryTeaser = ({ darkMode }) => {
   return (
-    <div className="w-full mx-auto mt-16 relative">
+    <div className="w-full mx-auto mt-12 relative">
       {/* Background pattern */}
       <div className="absolute inset-0 grid grid-cols-8 z-0 opacity-5">
         {Array.from({ length: 8 }).map((_, i) => (
@@ -69,28 +71,31 @@ const CozyStoryTeaser = ({ darkMode }) => {
                 icon: <Leaf />,
                 emoji: "🌱",
                 day: "Day 1",
-                title: "A seed is planted",
-                quote: "You planted a new thought today.",
+                title: "The Seed in Your Hand",
+                quote:
+                  "You find a small seed in an old coat pocket, rough and unassuming. You decide to plant it in a pot by your window, wondering what it might become.",
                 color: "A3C9A8",
                 bgLight: "FFF5E1",
                 bgDark: "2A3A2A",
               },
               {
-                icon: <BookOpenCheck />,
-                emoji: "🦋",
-                day: "Day 7",
-                title: "Sprout grows taller",
-                quote: "One week of showing up — look at you grow.",
+                icon: <CloudRainWind />,
+                emoji: "🌧️",
+                day: "Day 10",
+                title: "The Big Rain",
+                quote:
+                  "A heavier rain falls, bending the sprouts. You prop them with a twig, whispering encouragement—they’ll rise again, and so will you.",
                 color: "66B2B2",
                 bgLight: "E0F7FA",
                 bgDark: "263A3A",
               },
               {
-                icon: <Smile />,
-                emoji: "🌸",
-                day: "Day 21",
-                title: "Full bloom",
-                quote: "You've created something beautiful.",
+                icon: <PawPrint />,
+                emoji: "🦊",
+                day: "Day 20",
+                title: "The Fox’s Nap",
+                quote:
+                  "A fox curls up beneath the tree, napping in its shade. You watch from a rocking chair, lantern lit—your peace is a gift to others now.",
                 color: "F98989",
                 bgLight: "FEE4E1",
                 bgDark: "3A2A2A",

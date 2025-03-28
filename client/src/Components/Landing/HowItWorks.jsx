@@ -42,7 +42,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="relative z-10 w-full max-w-6xl mt-20 px-6 py-12">
+    <section className="relative z-10 w-full max-w-6xl mt-12 px-6 py-12">
       <div className="text-center mb-16">
         <div className="inline-block mb-4 px-3 py-1 border-2 border-[#1A1A1A] dark:border-[#F8F1E9] text-xs font-medium tracking-wider">
           THE PROCESS
