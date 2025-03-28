@@ -325,6 +325,17 @@ app.delete("/journal/:id", async (req, res) => {
   }
 });
 
+// Get number of users
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.countDocuments();
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+});
+
 // 🔥 Get user data
 app.get("/user/:id", async (req, res) => {
   try {
