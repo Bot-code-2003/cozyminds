@@ -1,355 +1,246 @@
 {
-  "stories": [
+  "id": 1,
+  "title": "Tiny Beginnings",
+  "items": [
     {
-      "id": 1,
-      "title": "Tiny Beginnings",
-      "items": [
-        {
-          "visitMax": 3,
-          "emoji": "🌱",
-          "title": "Tiny Beginnings",
-          "story": "A seed has been planted. Tiny growth is still growth.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 6,
-          "emoji": "🌿",
-          "title": "Gentle Growth",
-          "story": "A sprout appears with gentle sunlight. You're nurturing your peace.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 9,
-          "emoji": "🦋",
-          "title": "Peaceful Visitor",
-          "story": "A butterfly lands softly nearby. You're attracting calm energy.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 12,
-          "emoji": "🌱 🌱",
-          "title": "Growing Together",
-          "story": "Another plant begins to grow beside yours. Connection is blooming.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 15,
-          "emoji": "🌧️",
-          "title": "Weathering Storms",
-          "story": "Rain returns, but your roots are strong. Growth isn't always sunny.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 18,
-          "emoji": "🪺",
-          "title": "Becoming Shelter",
-          "story": "A bird builds a nest on your branch. You're becoming shelter.",
-          "color": "bg-[#FFF8E1] dark:bg-[#2D2A1B]",
-          "borderColor": "border-[#FFECB3] dark:border-[#4D472C]"
-        },
-        {
-          "visitMax": 21,
-          "emoji": "🌸",
-          "title": "Gentle Bloom",
-          "story": "Your bloom begins. Your presence is a gentle kind of beautiful.",
-          "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
-          "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
-        },
-        {
-          "visitMax": 24,
-          "emoji": "🦊",
-          "title": "Peaceful Presence",
-          "story": "A fox naps under your tree. Peace is choosing you.",
-          "color": "bg-[#FFF3E0] dark:bg-[#2D261B]",
-          "borderColor": "border-[#FFE0B2] dark:border-[#4D422C]"
-        },
-        {
-          "visitMax": 27,
-          "emoji": "🌤️",
-          "title": "Balance Found",
-          "story": "Rain and sun appear together. You're balancing light and shadow.",
-          "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
-          "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
-        },
-        {
-          "visitMax": 30,
-          "emoji": "🌳",
-          "title": "Garden of Self-Love",
-          "story": "Your garden glows. You've nurtured a journey of self-love.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        }
-      ]
+      "visitMax": 1,
+      "emoji": "🌱",
+      "title": "The Seed in Your Hand",
+      "story": "You find a small seed in an old coat pocket, rough and unassuming. You decide to plant it in a pot by your window, wondering what it might become.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
     },
     {
-      "id": 2,
-      "title": "Sunlit Journey",
-      "items": [
-        {
-          "visitMax": 3,
-          "emoji": "🌻",
-          "title": "Sunlit Start",
-          "story": "A sunflower peeks above the soil. Your light begins to shine.",
-          "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
-          "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
-        },
-        {
-          "visitMax": 6,
-          "emoji": "🐦",
-          "title": "First Flight",
-          "story": "A bird takes its first flap. You're lifting off gently.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 9,
-          "emoji": "🌼",
-          "title": "Wild Beginnings",
-          "story": "A wildflower sways in the breeze. Your spirit finds freedom.",
-          "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
-          "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
-        },
-        {
-          "visitMax": 12,
-          "emoji": "🌲",
-          "title": "Rooted Strength",
-          "story": "A sapling stands firm. Your roots are taking hold.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 15,
-          "emoji": "🌊",
-          "title": "Steady Waves",
-          "story": "Gentle waves lap the shore. Your rhythm steadies.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 18,
-          "emoji": "🦌",
-          "title": "Graceful Steps",
-          "story": "A deer steps lightly. You move with quiet grace.",
-          "color": "bg-[#FFF8E1] dark:bg-[#2D2A1B]",
-          "borderColor": "border-[#FFECB3] dark:border-[#4D472C]"
-        },
-        {
-          "visitMax": 21,
-          "emoji": "🌟",
-          "title": "Starry Nights",
-          "story": "Stars twinkle above. Your journey lights up the dark.",
-          "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
-          "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
-        },
-        {
-          "visitMax": 24,
-          "emoji": "🍂",
-          "title": "Falling Leaves",
-          "story": "Leaves drift down gently. You embrace change with ease.",
-          "color": "bg-[#FFF3E0] dark:bg-[#2D261B]",
-          "borderColor": "border-[#FFE0B2] dark:border-[#4D422C]"
-        },
-        {
-          "visitMax": 27,
-          "emoji": "🌺",
-          "title": "Joyful Bloom",
-          "story": "A flower opens wide. Your joy begins to spread.",
-          "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
-          "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
-        },
-        {
-          "visitMax": 30,
-          "emoji": "🏞️",
-          "title": "Valley of Peace",
-          "story": "A valley rests calmly. You've crafted a journey of peace.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        }
-      ]
+      "visitMax": 2,
+      "emoji": "🖐️",
+      "title": "A Gentle Press",
+      "story": "You press the seed into soft soil, your fingers lingering in the cool earth. It’s a quiet act, but it feels like a promise to yourself.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
     },
     {
-      "id": 3,
-      "title": "Spring Awakening",
-      "items": [
-        {
-          "visitMax": 3,
-          "emoji": "🌷",
-          "title": "Spring Awakening",
-          "story": "A tulip breaks the soil. New beginnings stir within you.",
-          "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
-          "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
-        },
-        {
-          "visitMax": 6,
-          "emoji": "🐝",
-          "title": "Busy Harmony",
-          "story": "A bee buzzes softly. You find rhythm in your efforts.",
-          "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
-          "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
-        },
-        {
-          "visitMax": 9,
-          "emoji": "🌾",
-          "title": "Golden Fields",
-          "story": "Wheat sways in the wind. Your growth ripens steadily.",
-          "color": "bg-[#FFF8E1] dark:bg-[#2D2A1B]",
-          "borderColor": "border-[#FFECB3] dark:border-[#4D472C]"
-        },
-        {
-          "visitMax": 12,
-          "emoji": "🌈",
-          "title": "Rainbow's Promise",
-          "story": "A rainbow arches above. Hope colors your days.",
-          "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
-          "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
-        },
-        {
-          "visitMax": 15,
-          "emoji": "⛅",
-          "title": "Soft Skies",
-          "story": "Clouds part gently. Clarity finds its way to you.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 18,
-          "emoji": "🐾",
-          "title": "Trailblazer",
-          "story": "Paw prints mark the path. You carve your own way.",
-          "color": "bg-[#FFF3E0] dark:bg-[#2D261B]",
-          "borderColor": "border-[#FFE0B2] dark:border-[#4D422C]"
-        },
-        {
-          "visitMax": 21,
-          "emoji": "🌹",
-          "title": "Rose of Resilience",
-          "story": "A rose blooms through thorns. Your strength is beautiful.",
-          "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
-          "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
-        },
-        {
-          "visitMax": 24,
-          "emoji": "🦋 🦋",
-          "title": "Wings of Change",
-          "story": "Butterflies dance together. You transform with grace.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 27,
-          "emoji": "🌙",
-          "title": "Moonlit Path",
-          "story": "The moon guides your steps. You shine in quiet moments.",
-          "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
-          "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
-        },
-        {
-          "visitMax": 30,
-          "emoji": "🌄",
-          "title": "Dawn of Serenity",
-          "story": "Sunrise paints the sky. A journey of calm unfolds.",
-          "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
-          "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
-        }
-      ]
+      "visitMax": 3,
+      "emoji": "💧",
+      "title": "First Drops",
+      "story": "You water the pot with a chipped mug, watching droplets sink in. The room smells of rain and hope as you settle into this small ritual.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
     },
     {
-      "id": 4,
-      "title": "Whispering Leaves",
-      "items": [
-        {
-          "visitMax": 3,
-          "emoji": "🍃",
-          "title": "Whispering Leaves",
-          "story": "Leaves rustle softly. Your journey begins anew.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 6,
-          "emoji": "🐞",
-          "title": "Little Wonders",
-          "story": "A ladybug lands nearby. Small joys brighten your days.",
-          "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
-          "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
-        },
-        {
-          "visitMax": 9,
-          "emoji": "🌵",
-          "title": "Desert Bloom",
-          "story": "A cactus flowers bravely. You thrive in any season.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 12,
-          "emoji": "🌬️",
-          "title": "Breeze of Growth",
-          "story": "A soft wind carries seeds. Your progress spreads gently.",
-          "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
-          "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
-        },
-        {
-          "visitMax": 15,
-          "emoji": "🐢",
-          "title": "Steady Pace",
-          "story": "A turtle moves forward. Your patience builds strength.",
-          "color": "bg-[#FFF8E1] dark:bg-[#2D2A1B]",
-          "borderColor": "border-[#FFECB3] dark:border-[#4D472C]"
-        },
-        {
-          "visitMax": 18,
-          "emoji": "🌴",
-          "title": "Oasis Found",
-          "story": "A palm shades the sand. You create your own refuge.",
-          "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
-          "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
-        },
-        {
-          "visitMax": 21,
-          "emoji": "🌞",
-          "title": "Sunlit Joy",
-          "story": "The sun warms your path. Happiness grows within you.",
-          "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
-          "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
-        },
-        {
-          "visitMax": 24,
-          "emoji": "🦔",
-          "title": "Cozy Retreat",
-          "story": "A hedgehog curls up. You find comfort in your space.",
-          "color": "bg-[#FFF3E0] dark:bg-[#2D261B]",
-          "borderColor": "border-[#FFE0B2] dark:border-[#4D422C]"
-        },
-        {
-          "visitMax": 27,
-          "emoji": "🌌",
-          "title": "Cosmic Calm",
-          "story": "The night sky sparkles. Your peace reaches new depths.",
-          "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
-          "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
-        },
-        {
-          "visitMax": 30,
-          "emoji": "🏡",
-          "title": "Home of Harmony",
-          "story": "A cottage glows warmly. You've built a journey of balance.",
-          "color": "bg-[#FFF8E1] dark:bg-[#2D2A1B]",
-          "borderColor": "border-[#FFECB3] dark:border-[#4D472C]"
-        }
-      ]
+      "visitMax": 4,
+      "emoji": "☀️",
+      "title": "A Ray of Light",
+      "story": "Morning sun spills through the window, warming the soil. You sip tea and imagine the seed stirring below, reaching for that glow.",
+      "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
+      "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
+    },
+    {
+      "visitMax": 5,
+      "emoji": "🌿",
+      "title": "A Tiny Breakthrough",
+      "story": "A green tip pokes through the dirt, fragile but bold. You smile over your book, feeling a flicker of pride for this little life.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 6,
+      "emoji": "🌱",
+      "title": "The Sprout Stands",
+      "story": "The sprout straightens, two leaves unfurling like tiny wings. You hum softly, marveling at how it’s already finding its way.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 7,
+      "emoji": "🕊️",
+      "title": "A Bird’s Song",
+      "story": "A bird perches outside, trilling a melody. You wonder if it’s cheering for the sprout—or maybe for you, tending it so gently.",
+      "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
+      "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
+    },
+    {
+      "visitMax": 8,
+      "emoji": "🌧️",
+      "title": "A Soft Rain",
+      "story": "Rain taps the glass, a gentle rhythm. You move the pot to catch a few drops, trusting the storm to help it grow.",
+      "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
+      "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
+    },
+    {
+      "visitMax": 9,
+      "emoji": "🦋",
+      "title": "The Butterfly’s Visit",
+      "story": "A butterfly flutters in, landing near the pot. You hold your breath as it rests, wings brushing the leaves—a sign of life drawn to your care.",
+      "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
+      "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
+    },
+    {
+      "visitMax": 10,
+      "emoji": "🌿",
+      "title": "A Third Leaf",
+      "story": "A new leaf uncurls, bright and strong. You trace its edge with a finger, feeling the quiet strength building beneath the surface.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 11,
+      "emoji": "🌞",
+      "title": "Golden Hours",
+      "story": "The sun bathes the sprout in gold, and it seems to stretch taller. You sit beside it, warmed by the light and your own steady effort.",
+      "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
+      "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
+    },
+    {
+      "visitMax": 12,
+      "emoji": "🌱 🌱",
+      "title": "A Neighbor Sprouts",
+      "story": "A second seed you planted nearby breaks through, joining the first. You laugh softly—your little world is growing, just like you.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 13,
+      "emoji": "🍃",
+      "title": "Leaves in the Breeze",
+      "story": "A breeze sneaks in, rustling the leaves. You watch them sway, feeling a kinship with their dance—small, but alive.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 14,
+      "emoji": "🌧️",
+      "title": "The Big Rain",
+      "story": "A heavier rain falls, bending the sprouts. You prop them with a twig, whispering encouragement—they’ll rise again, and so will you.",
+      "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
+      "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
+    },
+    {
+      "visitMax": 15,
+      "emoji": "🌈",
+      "title": "After the Storm",
+      "story": "A rainbow arcs outside as the rain fades. You set the pot in its light, feeling hope bloom in your chest—beauty follows the hard days.",
+      "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
+      "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
+    },
+    {
+      "visitMax": 16,
+      "emoji": "🌳",
+      "title": "A Sapling Takes Shape",
+      "story": "The sprouts thicken into a sapling, sturdy and green. You repot it carefully, hands steady with the weight of its growth.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 17,
+      "emoji": "🐦",
+      "title": "A Feathered Friend",
+      "story": "A bird hops closer, eyeing the sapling. You scatter crumbs nearby, welcoming it—your little tree is drawing life to you.",
+      "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
+      "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
+    },
+    {
+      "visitMax": 18,
+      "emoji": "🪺",
+      "title": "The Nest Begins",
+      "story": "The bird returns, weaving twigs into a nest atop your sapling. You watch, awed—your care is becoming someone’s home.",
+      "color": "bg-[#FFF8E1] dark:bg-[#2D2A1B]",
+      "borderColor": "border-[#FFECB3] dark:border-[#4D472C]"
+    },
+    {
+      "visitMax": 19,
+      "emoji": "🌿",
+      "title": "Branches Reach Out",
+      "story": "New branches stretch from the sapling, bold and curious. You sit with a blanket, tracing their lines—growth feels like this, slow and sure.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 20,
+      "emoji": "🌸",
+      "title": "First Buds",
+      "story": "Tiny buds dot the branches, pink and shy. You light a candle to celebrate, their glow mirroring the warmth in your heart.",
+      "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
+      "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
+    },
+    {
+      "visitMax": 21,
+      "emoji": "🌸🌸",
+      "title": "Blossoms Open",
+      "story": "The buds bloom into flowers, soft and fragrant. You breathe them in, feeling their beauty echo something blooming in you.",
+      "color": "bg-[#FCE4EC] dark:bg-[#2E1C24]",
+      "borderColor": "border-[#F8BBD0] dark:border-[#4E303D]"
+    },
+    {
+      "visitMax": 22,
+      "emoji": "🐝",
+      "title": "The Bee’s Dance",
+      "story": "A bee buzzes in, dipping into the blossoms. You watch its joyful waltz, a guest in the world you’re building.",
+      "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
+      "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
+    },
+    {
+      "visitMax": 23,
+      "emoji": "🌳",
+      "title": "A Tree Emerges",
+      "story": "The sapling stands taller, a young tree now. You run your hand along its bark, feeling the strength you’ve nurtured day by day.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 24,
+      "emoji": "🦊",
+      "title": "The Fox’s Nap",
+      "story": "A fox curls up beneath the tree, napping in its shade. You watch from a rocking chair, lantern lit—your peace is a gift to others now.",
+      "color": "bg-[#FFF3E0] dark:bg-[#2D261B]",
+      "borderColor": "border-[#FFE0B2] dark:border-[#4D422C]"
+    },
+    {
+      "visitMax": 25,
+      "emoji": "🌙",
+      "title": "Moonlit Leaves",
+      "story": "The moon bathes the tree in silver, leaves glowing softly. You stand beneath it, feeling its quiet beauty mirror your own.",
+      "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
+      "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
+    },
+    {
+      "visitMax": 26,
+      "emoji": "🌧️",
+      "title": "A Final Rain",
+      "story": "Rain falls again, steady and strong. You watch the tree drink it in, roots deep—together, you’ve weathered so much.",
+      "color": "bg-[#E3F2FD] dark:bg-[#1A2C3D]",
+      "borderColor": "border-[#BBDEFB] dark:border-[#2C4356]"
+    },
+    {
+      "visitMax": 27,
+      "emoji": "🌤️",
+      "title": "Sun and Storm",
+      "story": "Rain and sun mingle, a rainbow crowning your tree. You step into the light, feeling the balance you’ve found through every season.",
+      "color": "bg-[#FFF9C4] dark:bg-[#2D2B1B]",
+      "borderColor": "border-[#FFF59D] dark:border-[#4D492C]"
+    },
+    {
+      "visitMax": 28,
+      "emoji": "🍂",
+      "title": "Leaves Fall",
+      "story": "A few leaves drift down, golden and crisp. You catch one, knowing letting go is part of growing—your tree stands taller for it.",
+      "color": "bg-[#FFF3E0] dark:bg-[#2D261B]",
+      "borderColor": "border-[#FFE0B2] dark:border-[#4D422C]"
+    },
+    {
+      "visitMax": 29,
+      "emoji": "🌳",
+      "title": "The Tree Stands Tall",
+      "story": "Your tree towers now, branches wide, roots firm. You sit beneath it, a book in hand, feeling its strength echo your own quiet resilience.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
+    },
+    {
+      "visitMax": 30,
+      "emoji": "🌳",
+      "title": "Your Tiny Beginning",
+      "story": "From one small seed, you’ve grown a tree—blossoming, sheltering, enduring. You rest against its trunk, proud of every day you showed up. This is your triumph: a life nurtured with love, standing tall. Well done, you beautiful gardener of your own soul.",
+      "color": "bg-[#E8F5E9] dark:bg-[#1B2E1E]",
+      "borderColor": "border-[#C8E6C9] dark:border-[#2E4E32]"
     }
-  ],
-  "default": {
-    "emoji": "🌈",
-    "title": "New Journey",
-    "story": "A new story begins with every visit. Keep exploring.",
-    "color": "bg-[#F3E5F5] dark:bg-[#291C2D]",
-    "borderColor": "border-[#E1BEE7] dark:border-[#452F4D]"
-  }
+  ]
 }

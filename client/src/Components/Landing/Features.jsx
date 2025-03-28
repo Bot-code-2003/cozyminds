@@ -216,13 +216,13 @@ const Features = () => {
               personalized prompts and insights based on your mood patterns and
               goals.
             </p>
-            <Link
+            {/* <Link
               to="/waitlist"
               className="inline-flex items-center gap-2 px-6 py-2 bg-[#1A1A1A] dark:bg-[#F8F1E9] text-white dark:text-[#1A1A1A] hover:bg-[#F4A261] dark:hover:bg-[#F4A261] transition-colors"
             >
               Join the waitlist
               <ArrowRight size={16} />
-            </Link>
+            </Link> */}
           </div>
 
           <div className="md:w-1/3 aspect-square bg-[#F4A261]/10 dark:bg-[#F4A261]/5 border-2 border-[#1A1A1A] dark:border-[#F8F1E9] flex items-center justify-center">
