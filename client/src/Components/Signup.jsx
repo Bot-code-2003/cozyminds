@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Eye,
   EyeOff,
@@ -13,15 +13,17 @@ import {
   User,
   Calendar,
   ChevronDown,
+  AlertCircle,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/ThemeContext";
+import LoadingScreen from "./ui/LoadingScreen";
 
 const Signup = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
-  // const [reversedDarkMode, setreversedDarkMode] = useState(true);
   const { darkMode, setDarkMode } = useDarkMode();
   const reversedDarkMode = !darkMode;
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [nickname, setNickname] = useState("");
@@ -30,23 +32,70 @@ const Signup = () => {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [subscribe, setSubscribe] = useState(true);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [dataFetched, setDataFetched] = useState(false);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
 
-  const navigate = useNavigate();
+  // Effect to handle navigation after both conditions are met
+  useEffect(() => {
+    if (dataFetched && minTimeElapsed) {
+      setShowLoadingScreen(false);
+      navigate("/");
+    }
+  }, [dataFetched, minTimeElapsed, navigate]);
+
+  // Effect to handle minimum time elapsed
+  useEffect(() => {
+    if (showLoadingScreen) {
+      const timer = setTimeout(() => {
+        setMinTimeElapsed(true);
+      }, 2000); // Minimum 2 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [showLoadingScreen]);
+
+  // Clear errors when user modifies inputs
+  useEffect(() => {
+    if (error) {
+      setError(null);
+    }
+
+    // Clear specific field errors when that field changes
+    const newFieldErrors = { ...fieldErrors };
+    if (nickname && newFieldErrors.nickname) delete newFieldErrors.nickname;
+    if (email && newFieldErrors.email) delete newFieldErrors.email;
+    if (password && newFieldErrors.password) delete newFieldErrors.password;
+    if (age && newFieldErrors.age) delete newFieldErrors.age;
+    if (gender && newFieldErrors.gender) delete newFieldErrors.gender;
+
+    if (
+      Object.keys(newFieldErrors).length !== Object.keys(fieldErrors).length
+    ) {
+      setFieldErrors(newFieldErrors);
+    }
+  }, [nickname, email, password, age, gender]);
+
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
-
-    const button = e.target.querySelector('button[type="submit"]');
-    button.innerHTML = "Creating Account...";
+    setShowLoadingScreen(true);
+    setDataFetched(false);
+    setMinTimeElapsed(false);
+    setError(null);
+    setFieldErrors({});
 
     try {
       const response = await API.post("/signup", {
         nickname,
         email,
-        password, // Sent to backend but NOT stored in local storage
+        password,
         age,
         gender,
         subscribe,
@@ -54,33 +103,74 @@ const Signup = () => {
 
       console.log("Signup successful:", response.data);
 
-      // **Store user data in local storage (without password)**
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: response.data.user._id, // Assuming backend returns the user object
-          nickname: response.data.user.nickname,
-          email: response.data.user.email,
-          age: response.data.user.age,
-          gender: response.data.user.gender,
-          subscribe: response.data.user.subscribe,
-          currentStreak: response.data.user.currentStreak,
-          longestStreak: response.data.user.longestStreak,
-          lastJournaled: response.data.user.lastJournaled,
-          storyVisitCount: response.data.user.storyVisitCount,
-          storiesCompleted: response.data.user.storiesCompleted,
-          lastVisited: response.data.user.lastVisited,
-        })
-      );
+      const user = {
+        id: response.data.user._id,
+        nickname: response.data.user.nickname,
+        email: response.data.user.email,
+        age: response.data.user.age,
+        gender: response.data.user.gender,
+        subscribe: response.data.user.subscribe,
+        currentStreak: response.data.user.currentStreak,
+        longestStreak: response.data.user.longestStreak,
+        lastJournaled: response.data.user.lastJournaled,
+        storyVisitCount: response.data.user.storyVisitCount,
+        storiesCompleted: response.data.user.storiesCompleted,
+        lastVisited: response.data.user.lastVisited,
+      };
 
-      // Redirect immediately after signup
-      window.location.href = "/";
+      sessionStorage.setItem("user", JSON.stringify(user));
+      setUserData(user);
+      setDataFetched(true); // Mark data as fetched
     } catch (error) {
       console.error(
         "Signup Error:",
         error.response ? error.response.data : error.message
       );
-      button.innerHTML = "Error! Try Again";
+      setShowLoadingScreen(false);
+
+      // Handle different types of errors
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.status === 409) {
+          setError(
+            "This email is already registered. Please use a different email or try logging in."
+          );
+          setFieldErrors({ ...fieldErrors, email: true });
+        } else if (error.response.status === 400) {
+          // Handle validation errors
+          if (error.response.data && error.response.data.errors) {
+            const validationErrors = {};
+            let errorMessage = "Please correct the following issues:";
+
+            error.response.data.errors.forEach((err) => {
+              validationErrors[err.field] = true;
+              errorMessage += `\n• ${err.message}`;
+            });
+
+            setFieldErrors(validationErrors);
+            setError(errorMessage);
+          } else if (error.response.data && error.response.data.message) {
+            setError(error.response.data.message);
+          } else {
+            setError(
+              "Invalid information provided. Please check your details and try again."
+            );
+          }
+        } else if (error.response.data && error.response.data.message) {
+          setError(error.response.data.message);
+        } else {
+          setError("Signup failed. Please try again later.");
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        setError(
+          "No response from server. Please check your internet connection."
+        );
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
@@ -92,6 +182,13 @@ const Signup = () => {
           : "bg-[#1A1A1A] text-[#F8F1E9]"
       } font-sans flex flex-col items-center justify-center p-8 relative overflow-hidden transition-colors duration-300`}
     >
+      {/* Loading Screen */}
+      <LoadingScreen
+        isLoading={showLoadingScreen}
+        setIsLoading={setShowLoadingScreen}
+        duration={2000}
+      />
+
       {/* Dark Mode Toggle */}
       <button
         onClick={toggleDarkMode}
@@ -153,6 +250,20 @@ const Signup = () => {
           <p className="opacity-70 text-sm">Join us for daily mental clarity</p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div
+            className={`mb-6 p-3 flex items-start rounded-md ${
+              !reversedDarkMode
+                ? "bg-red-900/30 text-red-200"
+                : "bg-red-50 text-red-600"
+            }`}
+          >
+            <AlertCircle className="mr-2 h-5 w-5 flex-shrink-0 mt-0.5" />
+            <div className="text-sm whitespace-pre-line">{error}</div>
+          </div>
+        )}
+
         <form onSubmit={handleSignupSubmit} className="space-y-4">
           {/* Nickname */}
           <div className="relative">
@@ -169,6 +280,12 @@ const Signup = () => {
                   !reversedDarkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  fieldErrors.nickname
+                    ? !reversedDarkMode
+                      ? "border-red-500"
+                      : "border-red-400"
+                    : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 placeholder="Your nickname"
                 required
@@ -191,6 +308,12 @@ const Signup = () => {
                   !reversedDarkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  fieldErrors.email
+                    ? !reversedDarkMode
+                      ? "border-red-500"
+                      : "border-red-400"
+                    : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 placeholder="Your email"
                 required
@@ -213,6 +336,12 @@ const Signup = () => {
                   !reversedDarkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  fieldErrors.password
+                    ? !reversedDarkMode
+                      ? "border-red-500"
+                      : "border-red-400"
+                    : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 placeholder="Your password"
                 required
@@ -244,6 +373,12 @@ const Signup = () => {
                   !reversedDarkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  fieldErrors.age
+                    ? !reversedDarkMode
+                      ? "border-red-500"
+                      : "border-red-400"
+                    : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 placeholder="Your age"
                 required
@@ -262,6 +397,12 @@ const Signup = () => {
                   !reversedDarkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  fieldErrors.gender
+                    ? !reversedDarkMode
+                      ? "border-red-500"
+                      : "border-red-400"
+                    : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 required
               >
@@ -313,7 +454,7 @@ const Signup = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button - Regular button instead of LoadingButton */}
           <button
             type="submit"
             className={`w-full px-6 py-3 mt-6 ${

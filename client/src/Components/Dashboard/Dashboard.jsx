@@ -43,6 +43,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showStreakModal, setShowStreakModal] = useState(false);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -136,6 +137,7 @@ const Dashboard = () => {
       setError(null);
 
       try {
+        // Get user data from session storage
         const user = JSON.parse(sessionStorage.getItem("user") || "null");
         setUserData(user);
 

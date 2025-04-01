@@ -1,29 +1,69 @@
 "use client";
 
-import { useState } from "react";
-import { Eye, EyeOff, Sun, Moon, ArrowRight, Mail, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Eye,
+  EyeOff,
+  Sun,
+  Moon,
+  ArrowRight,
+  Mail,
+  Lock,
+  AlertCircle,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/ThemeContext";
 import axios from "axios";
-const Login = () => {
-  const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+import CozyLoadingScreen from "./ui/LoadingScreen"; // 👈 make sure this path is correct
 
-  // const [darkMode, setdarkMode] = useState(false);
+const Login = ({ setUser }) => {
   const { darkMode, setDarkMode } = useDarkMode();
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [error, setError] = useState(null);
+
+  const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+  const MIN_LOADING_TIME = 3000; // 10 seconds
 
   const toggleDarkMode = () => {
-    // setdarkMode(!darkMode);
-    // document.documentElement.classList.toggle("dark");
     setDarkMode(!darkMode);
   };
 
+  useEffect(() => {
+    if (error) {
+      setError(null);
+    }
+  }, [loginEmail, loginPassword]);
+
+  useEffect(() => {
+    let interval;
+    if (showLoadingScreen) {
+      setLoadingProgress(0);
+      interval = setInterval(() => {
+        setLoadingProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + 1;
+        });
+      }, MIN_LOADING_TIME / 100);
+    }
+    return () => clearInterval(interval);
+  }, [showLoadingScreen]);
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login:", { email: loginEmail, password: loginPassword });
+    setShowLoadingScreen(true);
+    setError(null);
+
+    const startTime = Date.now();
+    let user = null;
 
     try {
       const response = await API.post("/login", {
@@ -31,29 +71,48 @@ const Login = () => {
         password: loginPassword,
       });
 
-      console.log("Login successful:", response.data);
+      user = {
+        id: response.data.user._id,
+        nickname: response.data.user.nickname,
+        email: response.data.user.email,
+        age: response.data.user.age,
+        gender: response.data.user.gender,
+        subscribe: response.data.user.subscribe,
+        currentStreak: response.data.user.currentStreak,
+        longestStreak: response.data.user.longestStreak,
+        lastJournaled: response.data.user.lastJournaled,
+        storyVisitCount: response.data.user.storyVisitCount,
+        storiesCompleted: response.data.user.storiesCompleted,
+        lastVisited: response.data.user.lastVisited,
+      };
 
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: response.data.user._id, // Assuming backend returns the user object
-          nickname: response.data.user.nickname,
-          email: response.data.user.email,
-          age: response.data.user.age,
-          gender: response.data.user.gender,
-          subscribe: response.data.user.subscribe,
-          currentStreak: response.data.user.currentStreak,
-          longestStreak: response.data.user.longestStreak,
-          lastJournaled: response.data.user.lastJournaled,
-          storyVisitCount: response.data.user.storyVisitCount,
-          storiesCompleted: response.data.user.storiesCompleted,
-          lastVisited: response.data.user.lastVisited,
-        })
-      );
-      window.location.href = "/";
+      setUser(user);
+      sessionStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
-      console.error("Login failed:", error);
+      setShowLoadingScreen(false);
+
+      if (error.response?.status === 401) {
+        setError("Invalid email or password. Please try again.");
+      } else if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else if (error.request) {
+        setError(
+          "No response from server. Please check your internet connection."
+        );
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
+      return;
     }
+
+    const elapsed = Date.now() - startTime;
+    const remaining = MIN_LOADING_TIME - elapsed;
+    if (remaining > 0) {
+      await new Promise((res) => setTimeout(res, remaining));
+    }
+
+    setShowLoadingScreen(false);
+    navigate("/");
   };
 
   return (
@@ -64,7 +123,12 @@ const Login = () => {
           : "bg-[#F8F1E9] text-[#1A1A1A]"
       } font-sans flex flex-col items-center justify-center p-8 relative overflow-hidden transition-colors duration-300`}
     >
-      {/* Dark Mode Toggle */}
+      {/* New Cozy Loading Screen */}
+      <CozyLoadingScreen
+        isLoading={showLoadingScreen}
+        progress={loadingProgress}
+      />
+
       <button
         onClick={toggleDarkMode}
         className="absolute top-6 right-6 p-2 hover:text-[#F4A261] transition-colors z-10"
@@ -73,38 +137,6 @@ const Login = () => {
         {darkMode ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
-      {/* Gradient Accent */}
-      <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-[#FFD7BA] to-transparent opacity-70 dark:opacity-20 transition-opacity duration-300"></div>
-
-      {/* SVG Decorative Element */}
-      <div className="absolute top-20 left-10 opacity-10 dark:opacity-5">
-        <svg
-          width="120"
-          height="120"
-          viewBox="0 0 120 120"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-            x="20"
-            y="20"
-            width="80"
-            height="80"
-            stroke={darkMode ? "#F8F1E9" : "#1A1A1A"}
-            strokeWidth="2"
-          />
-          <rect
-            x="40"
-            y="40"
-            width="40"
-            height="40"
-            stroke={darkMode ? "#F8F1E9" : "#1A1A1A"}
-            strokeWidth="2"
-          />
-        </svg>
-      </div>
-
-      {/* Logo */}
       <Link to="/" className="text-xl font-bold tracking-wider mb-12 z-10">
         COZY
         <span className={`${darkMode ? "text-[#F4A261]" : "text-[#E68A41]"}`}>
@@ -112,7 +144,6 @@ const Login = () => {
         </span>
       </Link>
 
-      {/* Login Form */}
       <div
         className={`w-full max-w-md ${
           darkMode ? "bg-[#2A2A2A]" : "bg-white"
@@ -123,8 +154,18 @@ const Login = () => {
           <p className="opacity-70 text-sm">Sign in to continue your journey</p>
         </div>
 
+        {error && (
+          <div
+            className={`mb-6 p-3 flex items-start rounded-md ${
+              darkMode ? "bg-red-900/30 text-red-200" : "bg-red-50 text-red-600"
+            }`}
+          >
+            <AlertCircle className="mr-2 h-5 w-5 flex-shrink-0" />
+            <div className="text-sm">{error}</div>
+          </div>
+        )}
+
         <form onSubmit={handleLoginSubmit} className="space-y-4">
-          {/* Email */}
           <div className="relative">
             <label className="block text-sm font-medium mb-1">Email</label>
             <div className="relative">
@@ -139,6 +180,8 @@ const Login = () => {
                   darkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  error ? (darkMode ? "border-red-500" : "border-red-400") : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 placeholder="Your email"
                 required
@@ -146,7 +189,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Password */}
           <div className="relative">
             <label className="block text-sm font-medium mb-1">Password</label>
             <div className="relative">
@@ -161,6 +203,8 @@ const Login = () => {
                   darkMode
                     ? "bg-[#1A1A1A] border-[#333333]"
                     : "bg-[#F8F1E9] border-[#D9D9D9]"
+                } ${
+                  error ? (darkMode ? "border-red-500" : "border-red-400") : ""
                 } border text-current focus:outline-none focus:border-[#F4A261] transition-all duration-300`}
                 placeholder="Your password"
                 required
@@ -175,7 +219,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Forgot Password */}
           <div className="text-right">
             <button
               type="button"
@@ -185,7 +228,6 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className={`w-full px-6 py-3 mt-6 ${
@@ -202,10 +244,9 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Signup Link */}
         <div className="mt-6 text-center">
           <p className="text-sm opacity-70">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <Link to="/signup" className="text-[#F4A261] hover:underline">
               Sign Up
             </Link>
@@ -213,7 +254,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Custom CSS */}
       <style jsx>{`
         .shadow-sharp {
           box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);

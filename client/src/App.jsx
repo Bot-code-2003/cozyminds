@@ -18,17 +18,17 @@ import Library from "./Components/Library";
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // 👈
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    setLoading(false); // 👈 after checking
+    setLoading(false);
   }, []);
 
-  if (loading) return <div>Loading...</div>; // 👈 Optional: Spinner or blank
+  if (loading) return <div>Loading...</div>;
 
   return (
     <ThemeProvider>
@@ -41,7 +41,10 @@ const App = () => {
           )}
           <Route path="/journaling" element={<Journaling />} />
           <Route path="/journaling-alt" element={<JournalingAlt />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={<Login setUser={setUser} />} // Pass setUser to Login
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/journal/:id" element={<JournalEntry />} />
           <Route path="/journal-entries" element={<JournalEntries />} />
