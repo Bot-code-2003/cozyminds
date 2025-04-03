@@ -15,6 +15,7 @@ const CozyStory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [animate, setAnimate] = useState(false);
+  const [hoverState, setHoverState] = useState(false);
 
   // Default user data if nothing exists in sessionStorage
   const defaultUserData = {
@@ -90,21 +91,21 @@ const CozyStory = () => {
   if (loading) {
     return (
       <div
-        className={`p-6 border transition-all duration-300 shadow-sm ${
+        className={`p-6 transition-all duration-300 shadow-lg ${
           darkMode
-            ? "bg-[#1F1F1F] border-[#333333] text-[#F8F1E9]"
-            : "bg-[#FFFAF5] border-[#F0E6DD] text-[#5C4B3F]"
+            ? "bg-[#1F1F1F] text-[#F8F1E9]"
+            : "bg-[#FFFAF5] text-[#5C4B3F]"
         }`}
       >
         <div className="flex items-center justify-center h-24">
-          <div className="flex space-x-2">
-            <div className="h-2 w-2 rounded-full bg-[#E9C19D] animate-bounce"></div>
+          <div className="flex space-x-3">
+            <div className="h-3 w-3 bg-[#E9C19D] animate-bounce"></div>
             <div
-              className="h-2 w-2 rounded-full bg-[#E9C19D] animate-bounce"
+              className="h-3 w-3 bg-[#E9C19D] animate-bounce"
               style={{ animationDelay: "0.2s" }}
             ></div>
             <div
-              className="h-2 w-2 rounded-full bg-[#E9C19D] animate-bounce"
+              className="h-3 w-3 bg-[#E9C19D] animate-bounce"
               style={{ animationDelay: "0.4s" }}
             ></div>
           </div>
@@ -117,10 +118,10 @@ const CozyStory = () => {
   if (error) {
     return (
       <div
-        className={`p-6 border transition-all duration-300 shadow-sm ${
+        className={`p-6 transition-all duration-300 shadow-lg ${
           darkMode
-            ? "bg-[#2A2A2A] border-[#333333] text-[#F8F1E9]"
-            : "bg-[#FFFFFF] border-[#F0E6DD] text-[#5C4B3F]"
+            ? "bg-[#2A2A2A] text-[#F8F1E9]"
+            : "bg-[#FFFFFF] text-[#5C4B3F]"
         }`}
       >
         <div className="text-center py-4">
@@ -132,11 +133,11 @@ const CozyStory = () => {
 
   return (
     <div
-      className={`p-6 border transition-all duration-500 h-full shadow-md ${
-        darkMode
-          ? "bg-[#2A2A2A] border-[#333333] text-[#F8F1E9]"
-          : "bg-[#FFFFFF] border-[#F0E6DD] text-[#5C4B3F]"
+      className={`p-6 transition-all duration-500 h-full shadow-lg ${
+        darkMode ? "bg-[#2A2A2A] text-[#F8F1E9]" : "bg-[#FFFFFF] text-[#5C4B3F]"
       } ${animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+      onMouseEnter={() => setHoverState(true)}
+      onMouseLeave={() => setHoverState(false)}
     >
       <div className="flex flex-col items-center text-center">
         {/* Library button for completed stories */}
@@ -144,9 +145,9 @@ const CozyStory = () => {
           <div className="w-full mb-4">
             <Link
               to="/library"
-              className={`text-xs px-3 py-1.5 ${
+              className={`text-xs px-3 py-2 ${
                 darkMode ? "bg-[#333333]" : "bg-[#F0E6DD]"
-              } hover:opacity-80 transition-opacity flex items-center justify-center w-full`}
+              } hover:opacity-80 transition-opacity flex items-center justify-center w-full transform hover:translate-y-[-2px] transition-transform duration-300`}
             >
               View Story Library{" "}
               {userData.storiesCompleted > 0
@@ -158,10 +159,13 @@ const CozyStory = () => {
 
         {/* Emoji with subtle floating animation */}
         <div
-          className="text-6xl mb-5 transition-transform duration-1000 ease-in-out"
+          className={`text-7xl mb-6 transition-transform duration-1000 ease-in-out ${
+            hoverState ? "scale-110" : "scale-100"
+          }`}
           style={{
-            animation: "float 3s ease-in-out infinite",
+            animation: "float 4s ease-in-out infinite",
             transform: `translateY(${animate ? "0px" : "10px"})`,
+            textShadow: darkMode ? "0 0 15px rgba(233, 193, 157, 0.3)" : "none",
           }}
         >
           {currentStoryData.emoji}
@@ -169,37 +173,47 @@ const CozyStory = () => {
 
         {/* Story content with themed background */}
         <div
-          className={`w-full p-4 mb-4 transition-all duration-500 ${
+          className={`w-full p-5 mb-5 transition-all duration-500 ${
             currentStoryData.color
-          } ${currentStoryData.borderColor} border ${
+          } ${currentStoryData.borderColor} ${
             animate ? "opacity-100 scale-100" : "opacity-0 scale-95"
           }`}
-          style={{ transitionDelay: "0.2s" }}
+          style={{
+            transitionDelay: "0.2s",
+            boxShadow: darkMode
+              ? "0 4px 12px rgba(0, 0, 0, 0.2)"
+              : "0 4px 12px rgba(0, 0, 0, 0.05)",
+          }}
         >
-          <div className="mb-2">
-            <div className="text-sm uppercase tracking-wide opacity-70">
+          <div className="mb-3">
+            <div className="text-sm uppercase tracking-wide opacity-70 font-medium">
               Visit {userData?.storyVisitCount % 30 || 0}
             </div>
-            <h3 className="text-xl font-medium">{currentStoryData.title}</h3>
+            <h3 className="text-xl font-bold mt-1">{currentStoryData.title}</h3>
           </div>
-          <p className="text-sm italic opacity-90">{currentStoryData.story}</p>
+          <p className="text-sm italic opacity-90 leading-relaxed">
+            {currentStoryData.story}
+          </p>
         </div>
 
         {/* Story progress visualization */}
         <div
-          className="w-full mt-2 transition-all duration-500"
+          className="w-full mt-3 transition-all duration-500"
           style={{ transitionDelay: "0.4s" }}
         >
           {/* Progress bar */}
-          <div className="h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-3">
+          <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 overflow-hidden mb-3">
             <div
               className="h-full bg-[#E9C19D] dark:bg-[#D4A373] transition-all duration-1000 ease-out"
-              style={{ width: `${getStoryPercentage()}%` }}
+              style={{
+                width: `${getStoryPercentage()}%`,
+                boxShadow: "0 0 8px rgba(233, 193, 157, 0.5)",
+              }}
             ></div>
           </div>
 
           {/* Visit indicators */}
-          <div className="flex justify-between items-center text-xs opacity-70 px-1">
+          <div className="flex justify-between items-center text-xs opacity-70 px-1 font-medium">
             <div>Start</div>
             <div>10 Visits</div>
             <div>20 Visits</div>
@@ -208,7 +222,7 @@ const CozyStory = () => {
 
           {/* Story completion indicator */}
           {userData?.storiesCompleted > 0 && (
-            <div className="mt-4 text-xs opacity-70 text-center">
+            <div className="mt-4 text-xs opacity-70 text-center font-medium">
               Stories Completed: {userData.storiesCompleted}
             </div>
           )}
@@ -222,7 +236,7 @@ const CozyStory = () => {
             transform: translateY(0px);
           }
           50% {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
           }
           100% {
             transform: translateY(0px);
@@ -241,7 +255,7 @@ const CozyStory = () => {
         }
 
         .animate-fadeIn {
-          animation: fadeIn 0.3s ease-in-out;
+          animation: fadeIn 0.5s ease-in-out;
         }
       `}</style>
     </div>
