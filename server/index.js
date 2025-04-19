@@ -5,12 +5,13 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import journalRoutes from "./routes/journalRoutes.js";
 import mailRoutes from "./routes/mailRoutes.js";
+import dotenv from "dotenv";
 
 const app = express();
+dotenv.config();
 
-const mongoURL =
-  "mongodb+srv://madisettydharmadeep:cozyminds@cozyminds.yth43.mongodb.net/?retryWrites=true&w=majority&appName=cozyminds";
-app.use(cors({ origin: "https://cozyminds.vercel.app/" }));
+const mongoURL = process.env.MONGODB_URL;
+app.use(cors({ origin: "https://cozyminds.vercel.app" }));
 
 // Handle preflight requests
 app.options("*", cors());
