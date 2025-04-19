@@ -1,83 +1,182 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* 🎨 Custom Colors */
-@theme {
-  --color-bg-light: #f3f4f6;
-  --color-bg-dark: #101828;
-  --color-bg-secondary-light: #d1d5dc;
-  --color-bg-secondary-dark: #4a5565;
-  --color-bg-g-dark: #0b0f19;
-  --color-bg-g-light: #1a2338;
-  --color-cozy-green: #7fbe80; /* Muted soft green */
-  --color-cozy-yellow: #e6c767; /* Rich golden yellow */
-  --color-cozy-red: #e27d79; /* Soft coral red */
-  --color-cozy-purple: #a885e2; /* Warm violet purple */
-  --color-cozy-orange: #e0a16b; /* Cozy burnt orange */
-  --color-cozy-blue: #87add2;
-  --color-cozy-gray: #f0f0f0;
-  --color-bg-dark: #1e293b; /* Dark background */
-  --color-text-light: #e2e8f0; /* Soft white text */
-  --color-button-hover: #1d4ed8;
-  --color-overlay-dark: rgba(30, 41, 59, 0.6); /* Soft overlay effect */
+/* Reset for sharp corners */
+* {
+  border-radius: 0 !important;
+  /* font-family: serif !important; */
+  font-family: "Merriweather", serif;
+  font-optical-sizing: auto;
 }
 
-/* 📝 Custom Fonts */
+/* CSS Variables for Dark/Light Mode */
+:root {
+  --bg-primary: #f3f3f3;
+  --bg-secondary: #ffffff;
+  --bg-navbar: #e0e0e0;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --accent: #5999a8;
+  --accent-rgb: 112, 178, 192;
+  --border: #c8c7c7;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --highlight: #f5a623;
+  --highlight-rgb: 245, 166, 35;
+}
+
+.dark {
+  --bg-primary: #1f1f1f;
+  --bg-secondary: #252525;
+  --bg-navbar: #1a1a1a;
+  --text-primary: #f0f0f0;
+  --text-secondary: #aaaaaa;
+  --accent: #70b2c0;
+  --accent-rgb: 112, 178, 192;
+  --border: #4f4f4f;
+  --shadow: rgba(0, 0, 0, 0.2);
+  --highlight: #f5a623;
+  --highlight-rgb: 245, 166, 35;
+}
+
+.card-light {
+  background-color: #fff5e1; /* Warm cream, like candlelit pages */
+  border: 1px solid #e8b923; /* Soft amber, like hearth glow */
+  box-shadow: 0 2px 4px rgba(232, 185, 35, 0.1); /* Faint amber glow */
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card-dark {
+  background-color: #2d283e; /* Muted purple, like a moonlit tome */
+  border: 1px solid #a6b1e1; /* Silvery lavender, like moonlight */
+  box-shadow: 0 2px 4px rgba(166, 177, 225, 0.15); /* Subtle purple glow */
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* FOREST */
+/*Halooween*/
+.card-forest,
+.card-halloween,
+.card-christmas,
+.card-ocean {
+  color: white !important;
+  background-size: cover;
+  background-position: center;
+  position: relative; /* Enables positioning of the pseudo-element */
+}
+
+.card-forest::before,
+.card-halloween::before,
+.card-christmas::before,
+.card-ocean::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.2
+  ); /* Light, snowy overlay for Christmas vibe */
+  z-index: 1; /* Overlay sits above the background image */
+}
+
+/* Ensure content inside the card (if any) is above the overlay */
+.card-forest > *,
+.card-halloween > *,
+.card-christmas > *,
+.card-ocean > * {
+  position: relative;
+  z-index: 2;
+}
+.card-forest {
+  border: 2px solid #00ccff;
+  background-image: url("./assets/forest.png");
+}
+/* OCEAN */
+.card-ocean {
+  border: 2px solid #00ccff;
+  background-image: url("./assets/water.png");
+}
+
+/*CHRISTMAS*/
+.card-christmas {
+  border: 2px solid #ffcc00;
+  background-image: url("./assets/christmas.png");
+}
+
+/*Halooween*/
+.card-halloween {
+  border: 2px solid #ffcc00;
+  background-image: url("./assets/halloween.png");
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+/* Designer Border */
+.border-designer {
+  position: relative;
+  border: 1px solid var(--accent);
+}
+
+.border-designer::before,
+.border-designer::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+
+.border-designer::before {
+  top: -2px;
+  left: -2px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+
+.border-designer::after {
+  bottom: -2px;
+  right: -2px;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+}
+
+/* Specific Component Styles */
 body {
-  font-family: "Nunito", sans-serif;
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-light);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Poppins", sans-serif;
-}
-
-/* 🎨 Buttons */
-.btn-primary {
-  background-color: var(--color-cozy-blue);
+.coin-popup {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background-color: var(--accent, #70b2c0);
   color: white;
-  border: 1px solid var(--color-cozy-gray);
-  padding: 12px 24px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  transition: all 0.3s ease-in-out;
+  padding: 8px 16px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Increased z-index to ensure it’s above other elements */
+  display: flex;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-.btn-primary:hover {
-  background-color: var(--color-button-hover);
-}
-
-.btn-primary-2 {
-  background-color: #000000;
-  color: white;
-  border: 1px solid var(--color-cozy-gray);
-  padding: 12px 24px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  transition: all 0.3s ease-in-out;
-}
-
-.btn-primary-2:hover {
-  background-color: var(--color-button-hover);
-}
-
-.btn-secondary {
-  background-color: transparent;
-  border: 2px solid var(--color-text-light);
-  color: var(--color-text-light);
-  padding: 12px 24px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  transition: all 0.3s ease-in-out;
-}
-
-.btn-secondary:hover {
-  background-color: var(--color-cozy-gray);
-  color: var(--color-bg-dark);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

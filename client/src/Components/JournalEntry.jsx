@@ -1,8 +1,85 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDarkMode } from "../context/ThemeContext";
-import { Calendar, Tag, BarChart2, ArrowLeft } from "lucide-react";
+import { Tag, BarChart2, ArrowLeft } from "lucide-react";
 import axios from "axios";
+
+// Function to get card class based on theme
+const getCardClass = (theme, darkMode) => {
+  if (theme === "theme_forest") {
+    return "card-forest";
+  } else if (theme === "theme_ocean") {
+    return "card-ocean";
+  } else if (theme === "theme_christmas") {
+    return "card-christmas";
+  } else if (theme === "theme_halloween") {
+    return "card-halloween";
+  } else if (theme === "theme_pets") {
+    return "card-pets";
+  } else {
+    return darkMode ? "card-dark" : "card-light";
+  }
+};
+
+// Mood styling configurations
+const moodStyles = {
+  Happy: {
+    bgColor: "bg-green-500/20",
+    textColor: "text-green-500",
+    borderColor: "border-green-500",
+    emoji: "😄",
+  },
+  Neutral: {
+    bgColor: "bg-blue-400/20",
+    textColor: "text-blue-400",
+    borderColor: "border-blue-400",
+    emoji: "😐",
+  },
+  Sad: {
+    bgColor: "bg-blue-600/20",
+    textColor: "text-blue-600",
+    borderColor: "border-blue-600",
+    emoji: "😔",
+  },
+  Angry: {
+    bgColor: "bg-red-500/20",
+    textColor: "text-red-500",
+    borderColor: "border-red-500",
+    emoji: "😡",
+  },
+  Anxious: {
+    bgColor: "bg-purple-500/20",
+    textColor: "text-purple-500",
+    borderColor: "border-purple-500",
+    emoji: "😰",
+  },
+  Tired: {
+    bgColor: "bg-gray-500/20",
+    textColor: "text-gray-500",
+    borderColor: "border-gray-500",
+    emoji: "🥱",
+  },
+  Reflective: {
+    bgColor: "bg-green-600/20",
+    textColor: "text-green-600",
+    borderColor: "border-green-600",
+    emoji: "🤔",
+  },
+  Excited: {
+    bgColor: "bg-yellow-500/20",
+    textColor: "text-yellow-500",
+    borderColor: "border-yellow-500",
+    emoji: "🥳",
+  },
+  default: {
+    bgColor: "bg-[#F4A261]/20",
+    textColor: "text-[#F4A261]",
+    borderColor: "border-[#F4A261]",
+    emoji: "😶",
+  },
+};
 
 const JournalEntry = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -18,7 +95,8 @@ const JournalEntry = () => {
       setError(null);
       try {
         const response = await API.get(`/journal/${id}`);
-        setEntry(response.data.journal); // Corrected to match backend response
+        console.log("Journal entry:", response.data.journal);
+        setEntry(response.data.journal);
       } catch (err) {
         console.error("Error fetching journal entry:", err);
         setError("Failed to load journal entry. Please try again later.");
@@ -32,13 +110,7 @@ const JournalEntry = () => {
 
   if (loading) {
     return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${
-          darkMode
-            ? "bg-[#1A1A1A] text-[#F8F1E9]"
-            : "bg-[#F8F1E9] text-[#1A1A1A]"
-        }`}
-      >
+      <div>
         <p className="text-lg font-medium tracking-wide">LOADING ENTRY...</p>
       </div>
     );
@@ -46,55 +118,42 @@ const JournalEntry = () => {
 
   if (error || !entry) {
     return (
-      <div
-        className={`min-h-screen flex flex-col items-center justify-center ${
-          darkMode
-            ? "bg-[#1A1A1A] text-[#F8F1E9]"
-            : "bg-[#F8F1E9] text-[#1A1A1A]"
-        }`}
-      >
-        <h2 className="text-3xl font-bold tracking-wider mb-4">
-          {error ? "ERROR" : "NO ENTRY FOUND"}
-        </h2>
-        <p className="text-sm opacity-60 mb-6 tracking-wide">
-          {error || "This journal entry doesn’t exist or has been removed."}
+      <div>
+        <h2>{error ? "ERROR" : "NO ENTRY FOUND"}</h2>
+        <p>
+          {error || "This journal entry doesn't exist or has been removed."}
         </p>
-        <Link
-          to="/"
-          className={`flex items-center space-x-2 px-6 py-2 ${
-            darkMode
-              ? "bg-[#F4A261] text-[#1A1A1A]"
-              : "bg-[#1A1A1A] text-[#F8F1E9]"
-          } hover:opacity-80 transition-all shadow-sharp`}
-        >
+        <Link to="/">
           <ArrowLeft size={16} />
-          <span className="text-sm font-medium tracking-wide">
-            BACK TO DASHBOARD
-          </span>
+          <span>BACK TO DASHBOARD</span>
         </Link>
       </div>
     );
   }
 
+  // Get mood styling
+  const moodStyle = entry.mood
+    ? moodStyles[entry.mood] || moodStyles.default
+    : moodStyles.default;
+
   return (
     <div
       className={`min-h-screen ${
         darkMode ? "bg-[#1A1A1A] text-[#F8F1E9]" : "bg-[#F8F1E9] text-[#1A1A1A]"
-      } flex flex-col items-center px-6 py-12 relative overflow-hidden transition-colors duration-300`}
+      } flex flex-col items-center px-6 py-12 relative overflow-hidden transition-colors duration-300 ${getCardClass(
+        entry.theme,
+        darkMode
+      )}`}
     >
-      {/* Gradient Accents */}
-      <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-[#FFD7BA] opacity-20 dark:opacity-10 transform -skew-y-12"></div>
-      <div className="absolute bottom-0 right-0 w-1/2 h-1/3 bg-[#A9D6E5] opacity-20 dark:opacity-10 transform skew-y-12"></div>
+      {/* Theme-specific decorative elements */}
+      <div className="absolute top-0 left-0 w-1/2 h-1/2 opacity-20 dark:opacity-10 transform -skew-y-12"></div>
+      <div className="absolute bottom-0 right-0 w-1/2 h-1/3 opacity-20 dark:opacity-10 transform skew-y-12"></div>
 
       {/* Back Button */}
       <div className="w-full max-w-4xl flex justify-start mb-8 z-10">
         <Link
           to="/"
-          className={`flex items-center space-x-2 px-4 py-2 ${
-            darkMode
-              ? "bg-[#2A2A2A] text-[#F8F1E9] hover:bg-[#F4A261] hover:text-[#1A1A1A]"
-              : "bg-[#1A1A1A] text-[#F8F1E9] hover:bg-[#F4A261]"
-          } shadow-sharp hover:shadow-none transition-all duration-200`}
+          className={`flex items-center space-x-2 px-4 py-2 bg-[var(--accent)] transition-all duration-200`}
         >
           <ArrowLeft size={16} />
           <span className="text-sm font-medium tracking-wider">BACK</span>
@@ -103,18 +162,47 @@ const JournalEntry = () => {
 
       {/* Journal Container */}
       <div
-        className={`w-full max-w-4xl ${
-          darkMode ? "bg-[#2A2A2A]" : "bg-white"
-        } p-8 shadow-sharp border-t-8 border-[#F4A261] z-10`}
+        className={`w-full max-w-4xl bg-[var(--bg-primary)] p-8 shadow-sharp border-t-8 z-10`}
       >
+        {/* Theme indicator */}
+        {entry.theme && (
+          <div className="absolute top-3 right-3 opacity-70">
+            <span role="img" aria-label="theme-icon" className="text-2xl">
+              {entry.theme === "theme_forest"
+                ? "🌲"
+                : entry.theme === "theme_ocean"
+                ? "🌊"
+                : entry.theme === "theme_christmas"
+                ? "🎄"
+                : entry.theme === "theme_halloween"
+                ? "🎃"
+                : entry.theme === "theme_pets"
+                ? "🐶"
+                : "📝"}
+            </span>
+          </div>
+        )}
+
         {/* Header Section */}
-        <div className="border-b border-[#1A1A1A]/10 dark:border-[#F8F1E9]/10 pb-6 mb-6">
+        <div className="border-b border-[var(--border)] pb-6 mb-6">
           <h1 className="text-5xl font-bold tracking-[0.1em] mb-2">
             {entry.title.toUpperCase()}
           </h1>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs opacity-60 tracking-wide">
             <div className="flex items-center space-x-2">
-              <Calendar size={14} />
+              <span className="mr-1">
+                {entry.theme === "theme_forest"
+                  ? "🍃"
+                  : entry.theme === "theme_ocean"
+                  ? "🫧"
+                  : entry.theme === "theme_christmas"
+                  ? "❄️"
+                  : entry.theme === "theme_halloween"
+                  ? "👻"
+                  : entry.theme === "theme_pets"
+                  ? "🐕"
+                  : "📅"}
+              </span>
               <span>
                 {new Date(entry.date)
                   .toLocaleString("en-US", {
@@ -138,17 +226,10 @@ const JournalEntry = () => {
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-8">
           <div>
             <span
-              className={`inline-block px-4 py-1 text-sm font-medium tracking-wide ${
-                entry.mood === "Angry"
-                  ? "bg-red-500/20 text-red-500 border-red-500"
-                  : entry.mood === "Happy"
-                  ? "bg-green-500/20 text-green-500 border-green-500"
-                  : entry.mood === "Sad"
-                  ? "bg-blue-500/20 text-blue-500 border-blue-500"
-                  : "bg-[#F4A261]/20 text-[#F4A261] border-[#F4A261]"
-              } border`}
+              className={`inline-block px-4 py-1 text-sm font-medium tracking-wide ${moodStyle.bgColor} ${moodStyle.textColor} border ${moodStyle.borderColor}`}
             >
-              MOOD: {entry.mood ? entry.mood.toUpperCase() : "NOT SET"}
+              {moodStyle.emoji} MOOD:{" "}
+              {entry.mood ? entry.mood.toUpperCase() : "NOT SET"}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -158,7 +239,7 @@ const JournalEntry = () => {
                   key={index}
                   className={`flex items-center space-x-1 px-3 py-1 text-xs font-medium tracking-wide ${
                     darkMode
-                      ? "bg-[#F4A261]/10 text-[#F4A261] border-[#F4A261]"
+                      ? "bg-[#F8F1E9]/10 text-[#F8F1E9] border-[#F8F1E9]"
                       : "bg-[#1A1A1A]/10 text-[#1A1A1A] border-[#1A1A1A]"
                   } border`}
                 >
@@ -181,21 +262,6 @@ const JournalEntry = () => {
           <p>{entry.content}</p>
         </div>
       </div>
-
-      {/* Custom CSS */}
-      <style jsx>{`
-        .shadow-sharp {
-          box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.15);
-        }
-
-        .dark .shadow-sharp {
-          box-shadow: 8px 8px 0px rgba(255, 255, 255, 0.05);
-        }
-
-        * {
-          border-radius: 0 !important;
-        }
-      `}</style>
     </div>
   );
 };

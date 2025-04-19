@@ -52,7 +52,7 @@ const Navbar = ({ isScrolled, darkMode, setDarkMode, user }) => {
 
           {/* Hamburger Menu Button (visible on mobile) */}
           <button
-            className="md:hidden p-2 hover:text-[#F4A261] transition-colors"
+            className="md:hidden  p-2 hover:text-[#F4A261] transition-colors"
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
           >

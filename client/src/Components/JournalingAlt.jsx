@@ -3,32 +3,21 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  Sun,
-  Moon,
-  Save,
-  Calendar,
-  X,
-  ChevronDown,
-  ChevronUp,
-  Tag,
-  Check,
-  PenLine,
-  Bookmark,
-} from "lucide-react";
-import { Link } from "react-router-dom";
+import { Save, Check, X, Tag, FolderPlus } from "lucide-react";
 import { useDarkMode } from "../context/ThemeContext";
+import { useCoins } from "../context/CoinContext";
+import Navbar from "./Dashboard/Navbar";
 
 const JournalingAlt = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
   const { darkMode, setDarkMode } = useDarkMode();
+  const { inventory } = useCoins();
   const [selectedMood, setSelectedMood] = useState(null);
   const [journalText, setJournalText] = useState("");
   const [journalTitle, setJournalTitle] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [currentDate, setCurrentDate] = useState("");
   const [showMoodSelector, setShowMoodSelector] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
   const [showTagSelector, setShowTagSelector] = useState(false);
@@ -36,148 +25,228 @@ const JournalingAlt = () => {
   const [tagInput, setTagInput] = useState("");
   const [existingTags, setExistingTags] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
-  const [charCount, setCharCount] = useState(0);
+  const [selectedCollections, setSelectedCollections] = useState(["All"]);
+  const [collectionInput, setCollectionInput] = useState("");
+  const [existingCollections, setExistingCollections] = useState(["All"]);
+  const [showCollectionSelector, setShowCollectionSelector] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [availableThemes, setAvailableThemes] = useState([]);
 
   const navigate = useNavigate();
   const textareaRef = useRef(null);
   const titleRef = useRef(null);
   const tagInputRef = useRef(null);
+  const moodSelectorRef = useRef(null);
+  const collectionSelectorRef = useRef(null);
+  const themeSelectorRef = useRef(null);
 
   const moods = [
-    { emoji: "😄", name: "Happy", color: "#FFB17A" },
-    { emoji: "😐", name: "Neutral", color: "#83C5BE" },
-    { emoji: "😔", name: "Sad", color: "#7A82AB" },
-    { emoji: "😡", name: "Angry", color: "#E07A5F" },
-    { emoji: "😰", name: "Anxious", color: "#BC96E6" },
-    { emoji: "🥱", name: "Tired", color: "#8D99AE" },
-    { emoji: "🤔", name: "Reflective", color: "#81B29A" },
-    { emoji: "🥳", name: "Excited", color: "#F9C74F" },
+    { emoji: "😄", name: "Happy", color: "#FFD166" },
+    { emoji: "😐", name: "Neutral", color: "#A1D6DB" },
+    { emoji: "😔", name: "Sad", color: "#3A95B2" },
+    { emoji: "😡", name: "Angry", color: "#EF476F" },
+    { emoji: "😰", name: "Anxious", color: "#9B59B6" },
+    { emoji: "🥱", name: "Tired", color: "#6B7280" },
+    { emoji: "🤔", name: "Reflective", color: "#2ECC71" },
+    { emoji: "🥳", name: "Excited", color: "#F4A261" },
   ];
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+  // Theme details
+  const themeDetails = {
+    theme_forest: {
+      name: "Forest Theme",
+      icon: "🌲",
+      description: "Serene forest visuals",
+    },
+    theme_ocean: {
+      name: "Ocean Theme",
+      icon: "🌊",
+      description: "Tranquil ocean waves",
+    },
+    theme_christmas: {
+      name: "Christmas Theme",
+      icon: "🎄",
+      description: "Festive Christmas theme",
+    },
+    theme_halloween: {
+      name: "Halloween Theme",
+      icon: "🎃",
+      description: "Spooky Halloween theme",
+    },
+    theme_pets: {
+      name: "Pets Theme",
+      icon: "🐶",
+      description: "Furry friends theme",
+    },
   };
 
-  // Fetch existing tags from journal entries
+  const toggleDarkMode = () => setDarkMode(!darkMode);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("user");
+    window.location.href = "/";
+  };
+
+  // Fetch existing tags, collections, and set available themes from inventory
   useEffect(() => {
-    const fetchExistingTags = async () => {
+    const fetchExistingData = async () => {
       try {
         const userData = JSON.parse(sessionStorage.getItem("user"));
-        if (!userData || !userData.id) return;
+        if (!userData || !userData._id) return;
 
-        const response = await API.get(`/journals/${userData.id}`);
+        // Get available themes from user inventory
+        const themes = userData.inventory
+          .filter((item) => item.category === "theme")
+          .map((item) => ({
+            id: item.id,
+            name: themeDetails[item.id]?.name || item.name,
+            icon: themeDetails[item.id]?.icon || item.image,
+            description: themeDetails[item.id]?.description || item.description,
+          }));
+
+        setAvailableThemes(themes);
+
+        const response = await API.get(`/journals/${userData._id}`);
         const journals = response.data.journals || [];
 
-        // Extract unique tags from all journal entries
-        const uniqueTags = new Set();
+        // Get unique tags
+        const uniqueTags = [
+          ...new Set(
+            journals
+              .flatMap((journal) => journal.tags || [])
+              .map((tag) => tag.toUpperCase())
+          ),
+        ];
+        setExistingTags(uniqueTags);
+        setFilteredTags(uniqueTags);
+
+        // Get unique collections (always include "All")
+        const uniqueCollections = ["All"];
+
         journals.forEach((journal) => {
-          if (journal.tags && Array.isArray(journal.tags)) {
-            journal.tags.forEach((tag) => uniqueTags.add(tag.toUpperCase()));
+          if (journal.collections && Array.isArray(journal.collections)) {
+            journal.collections.forEach((collection) => {
+              if (
+                collection !== "All" &&
+                !uniqueCollections.includes(collection)
+              ) {
+                uniqueCollections.push(collection);
+              }
+            });
           }
         });
 
-        setExistingTags(Array.from(uniqueTags));
+        setExistingCollections(uniqueCollections);
       } catch (error) {
-        console.error("Error fetching tags:", error);
+        console.error("Error fetching data:", error);
       }
     };
+    fetchExistingData();
+  }, [inventory]);
 
-    fetchExistingTags();
+  // Update word count and reset isSaved
+  useEffect(() => {
+    const words = journalText.trim()
+      ? journalText.trim().split(/\s+/).length
+      : 0;
+    setWordCount(words);
+    if (isSaved) setIsSaved(false); // Reset saved state on content change
+  }, [journalText, journalTitle]);
+
+  // Filter tags based on tagInput
+  useEffect(() => {
+    if (tagInput.trim()) {
+      const matchedTags = existingTags.filter((tag) =>
+        tag.toLowerCase().includes(tagInput.toLowerCase())
+      );
+      setFilteredTags(matchedTags);
+    } else {
+      setFilteredTags(existingTags); // Show all tags when input is empty
+    }
+  }, [tagInput, existingTags]);
+
+  // Focus title on mount
+  useEffect(() => {
+    titleRef.current?.focus();
   }, []);
 
-  // Filter tags based on input
+  // Close selectors on outside click
   useEffect(() => {
-    if (!tagInput.trim()) {
-      setFilteredTags([]);
+    const handleClickOutside = (event) => {
+      if (
+        moodSelectorRef.current &&
+        !moodSelectorRef.current.contains(event.target)
+      ) {
+        setShowMoodSelector(false);
+      }
+
+      if (
+        collectionSelectorRef.current &&
+        !collectionSelectorRef.current.contains(event.target)
+      ) {
+        setShowCollectionSelector(false);
+      }
+
+      if (
+        themeSelectorRef.current &&
+        !themeSelectorRef.current.contains(event.target)
+      ) {
+        setShowCollectionSelector(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Handle save
+  const handleSave = async () => {
+    if (!journalTitle.trim() || !journalText.trim()) {
+      setSaveError("Please add a title and content.");
       return;
     }
 
-    const regex = new RegExp(tagInput, "i");
-    const filtered = existingTags.filter((tag) => regex.test(tag));
-    setFilteredTags(filtered);
-  }, [tagInput, existingTags]);
-
-  useEffect(() => {
-    const words = journalText.trim() ? journalText.trim().split(/\s+/) : [];
-    setWordCount(words.length);
-    setCharCount(journalText.length);
-  }, [journalText]);
-
-  useEffect(() => {
-    const now = new Date();
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    setCurrentDate(now.toLocaleDateString("en-US", options));
-  }, []);
-
-  const handleSave = async () => {
-    if (!journalTitle.trim() || !journalText.trim()) {
-      setSaveError("Please add a title and some content to your journal entry");
+    if (!selectedMood) {
+      setSaveError("Please select a mood.");
       return;
     }
 
     setIsSaving(true);
     setSaveError(null);
-
     try {
-      // Get user data from sessionStorage
       const userData = JSON.parse(sessionStorage.getItem("user"));
-
-      if (!userData || !userData.id) {
-        setSaveError("User not found. Please log in again.");
+      if (!userData || !userData._id) {
+        setSaveError("User not found. Please log in.");
         setIsSaving(false);
         return;
       }
-
-      // Convert all tags to uppercase for consistency
-      const uppercaseTags = selectedTags.map((tag) => tag.toUpperCase());
-
       const journalEntry = {
-        userId: userData.id,
+        userId: userData._id,
         title: journalTitle,
         mood: selectedMood,
         content: journalText,
         date: new Date(),
         wordCount,
-        tags: uppercaseTags,
+        tags: selectedTags.map((tag) => tag.toUpperCase()),
+        collections: selectedCollections,
+        theme: selectedTheme, // Add selected theme to journal entry
       };
-
       await API.post("/saveJournal", journalEntry);
-
       setIsSaved(true);
-
-      // Navigate to home after successful save
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      setTimeout(() => navigate("/collections"), 1000);
     } catch (error) {
-      console.error("Error saving journal:", error);
-      setSaveError(
-        error.response?.data?.message || "Failed to save journal entry"
-      );
+      setSaveError(error.response?.data?.message || "Failed to save journal.");
       setIsSaving(false);
     }
   };
 
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.focus();
-    }
-  }, []);
-
+  // Tag handling
   const addTag = (tag) => {
     const uppercaseTag = tag.toUpperCase();
-    if (!selectedTags.includes(uppercaseTag) && uppercaseTag.trim() !== "") {
+    if (uppercaseTag.trim() && !selectedTags.includes(uppercaseTag)) {
       setSelectedTags([...selectedTags, uppercaseTag]);
     }
     setTagInput("");
-    if (tagInputRef.current) {
-      tagInputRef.current.focus();
-    }
+    tagInputRef.current?.focus();
   };
 
   const handleTagInputKeyDown = (e) => {
@@ -187,419 +256,347 @@ const JournalingAlt = () => {
     }
   };
 
-  const removeTag = (tagToRemove) => {
-    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+  const removeTag = (tag) =>
+    setSelectedTags(selectedTags.filter((t) => t !== tag));
+
+  // Collection handling
+  const addCollection = (collection) => {
+    if (
+      collection.trim() &&
+      collection !== "All" &&
+      !selectedCollections.includes(collection)
+    ) {
+      setSelectedCollections([...selectedCollections, collection]);
+      if (!existingCollections.includes(collection)) {
+        setExistingCollections([...existingCollections, collection]);
+      }
+    }
+    setCollectionInput("");
+    setShowCollectionSelector(false);
+  };
+
+  const handleCollectionInputKeyDown = (e) => {
+    if (e.key === "Enter" && collectionInput.trim()) {
+      e.preventDefault();
+      addCollection(collectionInput);
+    }
+  };
+
+  const toggleCollection = (collection) => {
+    if (collection === "All") return; // Can't remove "All"
+
+    if (selectedCollections.includes(collection)) {
+      setSelectedCollections(
+        selectedCollections.filter((c) => c !== collection)
+      );
+    } else {
+      setSelectedCollections([...selectedCollections, collection]);
+    }
   };
 
   const selectedMoodColor = selectedMood
     ? moods.find((m) => m.name === selectedMood)?.color
-    : darkMode
-    ? "#F4A261"
-    : "#E68A41";
+    : "var(--accent)";
 
   return (
-    <div
-      className={`min-h-screen ${
-        darkMode
-          ? "dark bg-[#1A1A1A] text-[#F8F1E9]"
-          : "bg-[#F8F1E9] text-[#1A1A1A]"
-      } font-sans transition-colors duration-300`}
-    >
-      {/* Background pattern */}
-      <div className="fixed inset-0 z-0 opacity-5 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, ${
-              darkMode ? "#ffffff" : "#000000"
-            } 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${
-              darkMode ? "#ffffff" : "#000000"
-            } 2%, transparent 0%)`,
-            backgroundSize: "100px 100px",
-          }}
-        ></div>
-      </div>
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans transition-colors duration-300">
+      <Navbar handleLogout={handleLogout} name="Dashboard" link={"/"} />
 
-      <nav
-        className={`w-full ${
-          darkMode
-            ? "bg-[#1A1A1A]/90 backdrop-blur-sm border-b border-[#333333]"
-            : "bg-[#F8F1E9]/90 backdrop-blur-sm border-b border-[#DDDDDD]"
-        } py-4 px-6 flex justify-between items-center sticky top-0 z-20 shadow-md`}
-      >
-        <Link to="/" className="flex items-center">
-          <div className="text-xl font-bold tracking-tight">
-            COZY
-            <span
-              className={`${darkMode ? "text-[#F4A261]" : "text-[#E68A41]"}`}
-            >
-              MINDS
-            </span>
-          </div>
-        </Link>
-        <div className="flex items-center space-x-4">
-          <div className="hidden md:flex items-center text-sm opacity-80">
-            <Calendar size={16} className="mr-2" />
-            {currentDate}
-          </div>
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 hover:text-[#F4A261] transition-colors duration-200"
-            aria-label="Toggle dark mode"
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className={`px-4 py-2 flex items-center ${
-              darkMode
-                ? "bg-[#F4A261] text-[#1A1A1A] hover:bg-[#F4A261]/90"
-                : "bg-[#E68A41] text-white hover:bg-[#E68A41]/90"
-            } transition-all duration-200 transform ${
-              isSaved ? "scale-105" : ""
-            }`}
-          >
-            {isSaved ? (
-              <Check size={16} className="mr-2" />
-            ) : isSaving ? (
-              <span className="mr-2 animate-spin">⏳</span>
-            ) : (
-              <Save size={16} className="mr-2" />
-            )}
-            {isSaved ? "Saved" : isSaving ? "Saving..." : "Save"}
-          </button>
-        </div>
-      </nav>
-
-      <main className="max-w-4xl mx-auto px-6 py-10 relative z-10">
+      <main className="max-w-[95%] mx-auto px-4 py-6">
         {saveError && (
-          <div className="mb-6 p-4 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200 border-l-4 border-red-500 animate-slide-in">
+          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-l-4 border-red-500 rounded-md text-sm">
             {saveError}
           </div>
         )}
 
-        <div className="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <div className="flex flex-wrap gap-3">
-            {/** Mood Toggle */}
-            <div className="relative">
+        <div className="flex flex-col lg:flex-row">
+          {/* Main Journaling Area */}
+          <div className="flex-grow bg-[var(--bg-secondary)] border-[var(--border)] relative shadow-[var(--shadow)] rounded-xl p-5">
+            <input
+              ref={titleRef}
+              type="text"
+              value={journalTitle}
+              onChange={(e) => setJournalTitle(e.target.value)}
+              placeholder="Entry Title"
+              className="w-full border-none outline-none text-2xl font-semibold mb-3 bg-transparent text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
+            />
+
+            <textarea
+              ref={textareaRef}
+              value={journalText}
+              onChange={(e) => setJournalText(e.target.value)}
+              placeholder="Write your thoughts..."
+              className="w-full min-h-[450px] resize-none border-[var(--border)] rounded-md outline-none text-[var(--text-primary)] placeholder-[var(--text-secondary)] text-sm"
+            />
+
+            <div className="flex justify-between items-center mt-3 text-sm text-[var(--text-secondary)]">
+              <span>
+                {wordCount} {wordCount === 1 ? "word" : "words"}
+              </span>
               <button
-                onClick={() => setShowMoodSelector(!showMoodSelector)}
-                className={`flex items-center px-4 py-2 ${
-                  darkMode
-                    ? "bg-[#2A2A2A] hover:bg-[#333333]"
-                    : "bg-white hover:bg-[#F8F1E9]"
-                } border ${
-                  darkMode ? "border-[#333333]" : "border-[#DDDDDD]"
-                } transition-colors duration-200 shadow-sm hover:shadow`}
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-4 py-2 bg-[var(--accent)] text-white rounded-md flex items-center text-sm hover:bg-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <div
-                  className="w-3 h-3 mr-2 rounded-full"
-                  style={{ backgroundColor: selectedMoodColor }}
-                ></div>
-                <span className="mr-2 font-medium text-sm">Mood</span>
-                {selectedMood && (
-                  <span className="text-lg">
-                    {moods.find((m) => m.name === selectedMood)?.emoji}
-                  </span>
-                )}
-                {showMoodSelector ? (
-                  <ChevronUp size={16} className="ml-2 opacity-70" />
+                {isSaved ? (
+                  <Check size={16} className="mr-2" />
+                ) : isSaving ? (
+                  <span className="mr-2 animate-spin">⏳</span>
                 ) : (
-                  <ChevronDown size={16} className="ml-2 opacity-70" />
+                  <Save size={16} className="mr-2" />
                 )}
+                {isSaved ? "Saved" : isSaving ? "Saving..." : "Save Journal"}
               </button>
             </div>
+          </div>
 
-            {/** Tags Toggle */}
-            <div className="relative">
-              <button
-                onClick={() => setShowTagSelector(!showTagSelector)}
-                className={`flex items-center px-4 py-2 ${
-                  darkMode
-                    ? "bg-[#2A2A2A] hover:bg-[#333333]"
-                    : "bg-white hover:bg-[#F8F1E9]"
-                } border ${
-                  darkMode ? "border-[#333333]" : "border-[#DDDDDD]"
-                } transition-colors duration-200 shadow-sm hover:shadow`}
+          {/* Side Panel for Mood, Tags, Collections, and Themes */}
+          <div className="w-full bg-[var(--bg-navbar)] lg:w-[400px]">
+            {/* Theme Selection Panel */}
+            {availableThemes.length > 0 && (
+              <div
+                className="border-[var(--border)] shadow-[var(--shadow)] rounded-xl p-3 border-b"
+                ref={themeSelectorRef}
               >
-                <Tag size={16} className="mr-2 opacity-70" />
-                <span className="font-medium text-sm">Tags</span>
+                <h3 className="text-sm font-medium mb-2 text-[var(--text-primary)] flex items-center">
+                  <span className="mr-1.5 text-base">🎨</span>
+                  Select Theme
+                  {selectedTheme && (
+                    <span className="ml-1.5 bg-[var(--accent)] text-white text-xs px-1.5 py-0.5 rounded-full">
+                      {themeDetails[selectedTheme]?.name || "Custom"}
+                    </span>
+                  )}
+                </h3>
+
+                <div className="grid grid-cols-3 gap-1.5">
+                  <button
+                    onClick={() => setSelectedTheme(null)}
+                    className={`px-2 py-1.5 text-xs rounded-md flex items-center justify-center transition-colors ${
+                      !selectedTheme
+                        ? "bg-[var(--accent)] text-white"
+                        : "bg-[var(--bg-secondary)] hover:bg-[var(--accent)] hover:text-white"
+                    }`}
+                  >
+                    None
+                  </button>
+
+                  {availableThemes.map((theme) => (
+                    <button
+                      key={theme.id}
+                      onClick={() => setSelectedTheme(theme.id)}
+                      className={`px-2 py-1.5 text-xs rounded-md flex items-center justify-center transition-colors ${
+                        selectedTheme === theme.id
+                          ? "bg-[var(--accent)] text-white"
+                          : "bg-[var(--bg-secondary)] hover:bg-[var(--accent)] hover:text-white"
+                      }`}
+                    >
+                      <span className="mr-1">{theme.icon}</span>
+                      {theme.name.split(" ")[0]}
+                    </button>
+                  ))}
+                </div>
+
+                {selectedTheme && (
+                  <div className="mt-2 text-xs text-[var(--text-secondary)] italic">
+                    {themeDetails[selectedTheme]?.description || "Custom theme"}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Collection Selection Panel */}
+            <div
+              className="border-[var(--border)] shadow-[var(--shadow)] rounded-xl p-3 border-b"
+              ref={collectionSelectorRef}
+            >
+              <h3 className="text-sm font-medium mb-2 text-[var(--text-primary)] flex items-center">
+                <FolderPlus size={14} className="mr-1.5" />
+                Collections
+                {selectedCollections.length > 1 && (
+                  <span className="ml-1.5 bg-[var(--accent)] text-white text-xs px-1.5 py-0.5 rounded-full">
+                    {selectedCollections.length - 1}
+                  </span>
+                )}
+              </h3>
+
+              <div className="flex items-center mb-2">
+                <input
+                  type="text"
+                  value={collectionInput}
+                  onChange={(e) => setCollectionInput(e.target.value)}
+                  onKeyDown={handleCollectionInputKeyDown}
+                  placeholder="Add new collection..."
+                  className="flex-grow px-2 py-1.5 bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border)] text-xs outline-none"
+                />
+                <button
+                  onClick={() =>
+                    collectionInput.trim() && addCollection(collectionInput)
+                  }
+                  className="px-2 py-1.5 bg-[var(--accent)] text-white rounded-r-md text-xs hover:bg-[var(--accent)] transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+
+              {selectedCollections.length > 1 && (
+                <div className="mb-2">
+                  <h4 className="text-xs text-[var(--text-secondary)] mb-1.5">
+                    Selected:
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedCollections
+                      .filter((c) => c !== "All")
+                      .map((collection) => (
+                        <div
+                          key={collection}
+                          className="flex items-center px-2 py-0.5 bg-[var(--accent)] text-white text-xs rounded-full"
+                        >
+                          {collection}
+                          <button
+                            onClick={() => toggleCollection(collection)}
+                            className="ml-1.5 hover:text-[var(--bg-primary)] transition-colors"
+                            aria-label={`Remove ${collection} collection`}
+                          >
+                            <X size={10} />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-3 gap-1.5">
+                {existingCollections
+                  .filter(
+                    (c) => c !== "All" && !selectedCollections.includes(c)
+                  )
+                  .map((collection) => (
+                    <button
+                      key={collection}
+                      onClick={() => toggleCollection(collection)}
+                      className="px-2 py-1.5 text-xs rounded-md flex items-center justify-center transition-colors bg-[var(--bg-secondary)] hover:bg-[var(--accent)] hover:text-white"
+                    >
+                      {collection}
+                    </button>
+                  ))}
+              </div>
+            </div>
+
+            {/* Mood Selection Panel */}
+            <div
+              className="shadow-[var(--shadow)] rounded-xl p-3 border-b border-[var(--border)]"
+              ref={moodSelectorRef}
+            >
+              <h3 className="text-sm font-medium mb-2 text-[var(--text-primary)] flex items-center">
+                <div
+                  className="w-3 h-3 mr-1.5 rounded-full"
+                  style={{ backgroundColor: selectedMoodColor }}
+                ></div>
+                Select Mood <span className="text-red-500 ml-1">*</span>
+              </h3>
+              <div className="grid grid-cols-4 gap-1.5">
+                {moods.map((mood) => (
+                  <button
+                    key={mood.name}
+                    onClick={() => {
+                      setSelectedMood(mood.name);
+                      setShowMoodSelector(false);
+                    }}
+                    className={`px-1 py-1.5 text-xs rounded-md flex flex-col items-center justify-center transition-colors ${
+                      selectedMood === mood.name
+                        ? "bg-[var(--accent)] text-white"
+                        : "bg-[var(--bg-secondary)] hover:bg-[var(--accent)]"
+                    }`}
+                  >
+                    <span className="text-base mb-0.5">{mood.emoji}</span>
+                    <span>{mood.name}</span>
+                  </button>
+                ))}
+              </div>
+              {selectedMood && (
+                <div className="mt-2 text-xs text-[var(--text-secondary)] italic">
+                  Feeling {selectedMood.toLowerCase()}{" "}
+                  {moods.find((m) => m.name === selectedMood)?.emoji}
+                </div>
+              )}
+            </div>
+
+            {/* Tags Panel */}
+            <div className="border-[var(--border)] shadow-[var(--shadow)] rounded-xl p-3">
+              <h3 className="text-sm font-medium mb-2 text-[var(--text-primary)] flex items-center">
+                <Tag size={14} className="mr-1.5" />
+                Tags
                 {selectedTags.length > 0 && (
-                  <span className="ml-2 bg-[#F4A261] text-[#1A1A1A] text-xs px-2 py-0.5 rounded-sm">
+                  <span className="ml-1.5 bg-[var(--accent)] text-white text-xs px-1.5 py-0.5 rounded-full">
                     {selectedTags.length}
                   </span>
                 )}
-                {showTagSelector ? (
-                  <ChevronUp size={16} className="ml-2 opacity-70" />
-                ) : (
-                  <ChevronDown size={16} className="ml-2 opacity-70" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div
-              className={`flex items-center px-4 py-2 ${
-                darkMode ? "bg-[#2A2A2A]" : "bg-white"
-              } border ${
-                darkMode ? "border-[#333333]" : "border-[#DDDDDD]"
-              } shadow-sm`}
-            >
-              <PenLine size={16} className="mr-2 opacity-70" />
-              <span className="font-medium text-sm">
-                {charCount} {charCount === 1 ? "char" : "chars"}
-              </span>
-            </div>
-
-            <div
-              className={`flex items-center px-4 py-2 ${
-                darkMode ? "bg-[#2A2A2A]" : "bg-white"
-              } border ${
-                darkMode ? "border-[#333333]" : "border-[#DDDDDD]"
-              } shadow-sm`}
-            >
-              <Bookmark size={16} className="mr-2 opacity-70" />
-              <span className="font-medium text-sm">
-                {wordCount} {wordCount === 1 ? "word" : "words"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/** Mood options */}
-        {showMoodSelector && (
-          <div
-            className={`mb-4 ${
-              darkMode
-                ? "bg-[#2A2A2A] border-[#333333]"
-                : "bg-white border-[#DDDDDD]"
-            } border shadow-lg z-10 animate-fade-in`}
-          >
-            <div className="grid grid-cols-4 p-3 gap-3">
-              {moods.map((mood) => (
-                <button
-                  key={mood.name}
-                  onClick={() => {
-                    setSelectedMood(mood.name);
-                    setShowMoodSelector(false);
-                  }}
-                  className={`p-2 text-xl flex flex-col items-center ${
-                    selectedMood === mood.name
-                      ? darkMode
-                        ? "bg-[#333333]"
-                        : "bg-[#F8F1E9]"
-                      : ""
-                  } hover:${
-                    darkMode ? "bg-[#333333]" : "bg-[#F8F1E9]"
-                  } transition-colors duration-150 rounded`}
-                >
-                  <span>{mood.emoji}</span>
-                  <span className="text-xs mt-1">{mood.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/** Tag options */}
-        {showTagSelector && (
-          <div
-            className={`mt-4 mb-4 ${
-              darkMode
-                ? "bg-[#2A2A2A] border-[#333333]"
-                : "bg-white border-[#DDDDDD]"
-            } border shadow-lg z-10 animate-fade-in`}
-          >
-            <div className="p-3">
-              <div className="flex mb-3">
+              </h3>
+              <div className="flex items-center mb-2">
                 <input
                   ref={tagInputRef}
                   type="text"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleTagInputKeyDown}
-                  placeholder="Type a tag and press Enter"
-                  className={`flex-grow px-3 py-2 ${
-                    darkMode
-                      ? "bg-[#333333] text-[#F8F1E9]"
-                      : "bg-[#EEEEEE] text-[#1A1A1A]"
-                  } outline-none`}
+                  placeholder="Add a tag..."
+                  className="flex-grow px-2 py-1.5 bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border)] text-xs outline-none"
                 />
                 <button
-                  onClick={() => addTag(tagInput)}
-                  disabled={!tagInput.trim()}
-                  className={`px-3 py-2 ${
-                    darkMode
-                      ? "bg-[#F4A261] text-[#1A1A1A]"
-                      : "bg-[#E68A41] text-white"
-                  } ${!tagInput.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
+                  onClick={() => tagInput.trim() && addTag(tagInput)}
+                  className="px-2 py-1.5 bg-[var(--accent)] text-white rounded-r-md text-xs hover:bg-[var(--accent)] transition-colors"
                 >
                   Add
                 </button>
               </div>
-
-              {filteredTags.length > 0 && (
-                <div className="mb-3">
-                  <div className="text-sm opacity-70 mb-1">Suggestions:</div>
-                  <div className="flex flex-wrap gap-2">
-                    {filteredTags.map((tag) => (
-                      <button
+              {selectedTags.length > 0 && (
+                <div className="mb-2">
+                  <h4 className="text-xs text-[var(--text-secondary)] mb-1.5">
+                    Selected:
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedTags.map((tag) => (
+                      <div
                         key={tag}
-                        onClick={() => addTag(tag)}
-                        className={`px-3 py-1 text-sm ${
-                          darkMode
-                            ? "bg-[#333333] hover:bg-[#444444]"
-                            : "bg-[#EEEEEE] hover:bg-[#DDDDDD]"
-                        } transition-colors duration-150`}
+                        className="flex items-center px-2 py-0.5 bg-[var(--accent)] text-white text-xs rounded-full"
                       >
                         {tag}
-                      </button>
+                        <button
+                          onClick={() => removeTag(tag)}
+                          className="ml-1.5 hover:text-[var(--bg-primary)] transition-colors"
+                          aria-label={`Remove ${tag} tag`}
+                        >
+                          <X size={10} />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
-
-              {existingTags.length > 0 && (
+              {filteredTags.length > 0 && (
                 <div>
-                  <div className="text-sm opacity-70 mb-1">Existing tags:</div>
-                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                    {existingTags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => addTag(tag)}
-                        className={`px-3 py-1 text-sm ${
-                          selectedTags.includes(tag)
-                            ? "bg-[#F4A261] text-[#1A1A1A]"
-                            : darkMode
-                            ? "bg-[#333333] hover:bg-[#444444]"
-                            : "bg-[#EEEEEE] hover:bg-[#DDDDDD]"
-                        } transition-colors duration-150`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
+                  <h4 className="text-xs text-[var(--text-secondary)] mb-1.5">
+                    {tagInput.trim() ? "Matching:" : "Suggested:"}
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                    {filteredTags
+                      .filter((tag) => !selectedTags.includes(tag))
+                      .map((tag) => (
+                        <button
+                          key={tag}
+                          onClick={() => addTag(tag)}
+                          className="px-2 py-0.5 text-xs bg-[var(--bg-secondary)] text-[var(--text-primary)] rounded-full hover:bg-[var(--bg-secondary)]/80 transition-colors"
+                        >
+                          {tag}
+                        </button>
+                      ))}
                   </div>
                 </div>
               )}
             </div>
           </div>
-        )}
-
-        <div
-          className={`${
-            darkMode
-              ? "bg-[#2A2A2A] border-[#333333]"
-              : "bg-white border-[#DDDDDD]"
-          } border shadow-lg p-6 transition-all duration-300 relative`}
-        >
-          {/* Decorative corner elements */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#F4A261]"></div>
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#F4A261]"></div>
-          <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#F4A261]"></div>
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#F4A261]"></div>
-
-          <input
-            ref={titleRef}
-            type="text"
-            value={journalTitle}
-            onChange={(e) => setJournalTitle(e.target.value)}
-            placeholder="Entry Title"
-            className={`w-full border-none outline-none text-3xl font-bold mb-6 ${
-              darkMode
-                ? "bg-[#2A2A2A] text-[#F8F1E9]"
-                : "bg-white text-[#1A1A1A]"
-            } placeholder-opacity-50 focus:placeholder-opacity-30 transition-all`}
-          />
-
-          {selectedTags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6 animate-fade-in">
-              {selectedTags.map((tag) => (
-                <div
-                  key={tag}
-                  className={`flex items-center px-3 py-1 ${
-                    darkMode ? "bg-[#333333]" : "bg-[#EEEEEE]"
-                  } text-sm hover:shadow-sm transition-shadow`}
-                >
-                  {tag}
-                  <button
-                    onClick={() => removeTag(tag)}
-                    className="ml-2 opacity-70 hover:opacity-100 transition-opacity"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {selectedMood && (
-            <div className="mb-6 flex items-center text-sm opacity-70 animate-fade-in">
-              <div
-                className="w-3 h-3 mr-2 rounded-full"
-                style={{ backgroundColor: selectedMoodColor }}
-              ></div>
-              Feeling {selectedMood.toLowerCase()}
-              <span className="ml-2 text-lg">
-                {moods.find((m) => m.name === selectedMood)?.emoji}
-              </span>
-            </div>
-          )}
-
-          <textarea
-            ref={textareaRef}
-            value={journalText}
-            onChange={(e) => setJournalText(e.target.value)}
-            placeholder="Start writing your thoughts..."
-            className={`w-full min-h-[450px] resize-none border-none outline-none ${
-              darkMode
-                ? "bg-[#2A2A2A] text-[#F8F1E9]"
-                : "bg-white text-[#1A1A1A]"
-            } text-lg leading-relaxed placeholder-opacity-50 focus:placeholder-opacity-30 transition-all`}
-          ></textarea>
         </div>
       </main>
-
-      <div className="md:hidden fixed bottom-6 left-6 text-sm opacity-70 bg-[#2A2A2A] px-3 py-1 rounded-full shadow-md">
-        {currentDate}
-      </div>
-
-      <style jsx>{`
-        textarea::-webkit-scrollbar {
-          display: none;
-        }
-        textarea {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(5px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.2s ease-out;
-        }
-        @keyframes slide-in {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 };

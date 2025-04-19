@@ -23,15 +23,14 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 6,
     },
     age: {
       type: Number,
-      min: 13,
-      max: 120,
+      required: true,
     },
     gender: {
       type: String,
+      required: true,
       enum: ["male", "female", "other"],
     },
     subscribe: {
@@ -50,18 +49,20 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // Story tracking (independent from streak)
-    storyVisitCount: {
-      type: Number,
-      default: 0,
-    },
-    storiesCompleted: {
-      type: Number,
-      default: 0,
-    },
+    // Track last visit
     lastVisited: {
       type: Date,
     },
+    // New fields for coin system
+    coins: {
+      type: Number,
+      default: 0,
+    },
+    inventory: {
+      type: Array,
+      default: [],
+    },
+    // Remove activeTheme field as themes are now per-journal
   },
   { timestamps: true }
 );

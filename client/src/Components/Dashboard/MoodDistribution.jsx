@@ -16,11 +16,7 @@ import {
   LabelList,
 } from "recharts";
 
-const MoodDistribution = ({
-  journalEntries,
-  selectedMood,
-  setSelectedMood,
-}) => {
+const MoodDistribution = ({ journalEntries }) => {
   const { darkMode } = useDarkMode();
   const [currentMonthEntries, setCurrentMonthEntries] = useState([]);
 
@@ -41,13 +37,13 @@ const MoodDistribution = ({
     setCurrentMonthEntries(filtered);
   }, [journalEntries]);
 
-  // Mood options with emojis, descriptions and colors
+  // Mood options with emojis, descriptions, and colors
   const moods = [
     {
       emoji: "😄",
       name: "Happy",
       description: "Feeling joyful and content",
-      color: "#FFB17A",
+      color: "#70B2C0",
     },
     {
       emoji: "😐",
@@ -130,19 +126,15 @@ const MoodDistribution = ({
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div
-          className={`p-3 ${
-            darkMode ? "bg-[#333333]" : "bg-white"
-          } shadow-lg border ${
-            darkMode ? "border-[#444444]" : "border-[#EEEEEE]"
-          }`}
-        >
-          <p className="font-medium flex items-center">
-            <span className="mr-2">{data.emoji}</span>
+        <div className={`p-4 border shadow-elegant `}>
+          <p className={` text-lg flex items-center`}>
+            <span className="mr-3 text-2xl">{data.emoji}</span>
             {data.name}
           </p>
-          <p className="text-sm mt-1">
-            <span className="font-medium">{data.count}</span> entries
+          <p
+            className={`text-sm font-sans uppercase tracking-wide mt-2 text-[var(--text-secondary)]`}
+          >
+            <span className="font-medium">{data.count}</span> Entries
           </p>
         </div>
       );
@@ -151,98 +143,81 @@ const MoodDistribution = ({
   };
 
   return (
-    <div
-      className={`${darkMode ? "bg-[#2A2A2A]" : "bg-white"} shadow-lg p-6 mb-8`}
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">
-          {getCurrentMonthName()} Mood Distribution
-        </h2>
-        <div className="flex items-center gap-2">
-          {selectedMood && (
-            <button
-              onClick={() => setSelectedMood(null)}
-              className={`px-3 py-1 text-xs ${
-                darkMode
-                  ? "bg-[#333333] hover:bg-[#444444]"
-                  : "bg-[#EEEEEE] hover:bg-[#DDDDDD]"
-              } transition-colors`}
-            >
-              Reset filter
-            </button>
-          )}
-          <Link
-            to="/mood-distributions"
-            className={`px-3 py-1 text-xs flex items-center ${
-              darkMode
-                ? "bg-[#F4A261] text-[#1A1A1A]"
-                : "bg-[#E68A41] text-white"
-            }`}
-          >
-            <BarChart2 size={14} className="mr-1" />
-            Detailed View
-          </Link>
-        </div>
-      </div>
-
-      <div className="h-[300px] w-full">
-        {currentMonthEntries.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={getMoodChartData()}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke={darkMode ? "#333333" : "#EEEEEE"}
-              />
-              <YAxis
-                allowDecimals={false}
-                tickLine={false}
-                axisLine={{ stroke: darkMode ? "#333333" : "#DDDDDD" }}
-                tick={{ fontSize: 12 }}
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ fill: "transparent" }}
-              />
-              <Bar
-                dataKey="count"
-                radius={[2, 2, 0, 0]}
-                onClick={(data) => setSelectedMood(data.name)}
-                className="cursor-pointer"
+    <div className="max-w-7xl mx-auto px-4 sm:px-0 py-8 ">
+      <div
+        className={`p-6 border-designer bg-[var(--bg-secondary)] border shadow-elegant`}
+      >
+        <div>
+          <div className="flex justify-between items-center mb-6 ">
+            <h2 className={`text-2xl`}>
+              {getCurrentMonthName()}'s Mood Summary
+            </h2>
+            <div className="flex items-center gap-4 ">
+              <Link
+                to="/mood-distributions"
+                className={`px-3 py-1 border text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white flex items-center transition-colors duration-200`}
               >
-                {getMoodChartData().map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.color}
-                    opacity={
-                      selectedMood && selectedMood !== entry.name ? 0.4 : 0.8
-                    }
-                  />
-                ))}
-                <LabelList
-                  dataKey="emoji"
-                  position="top"
-                  style={{ fontSize: "16px" }}
-                  offset={10}
-                />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="h-full flex items-center justify-center">
-            <p className="text-center opacity-70">
-              No mood data available for {getCurrentMonthName()}
-            </p>
+                <BarChart2 size={16} className="mr-2" />
+                Full Analysis
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
 
-      <div className="text-xs opacity-70 mt-4 text-center">
-        Based on {currentMonthEntries.length} entries this month. Click on a bar
-        to filter by that mood.
+          <div className="h-[280px] w-full">
+            {currentMonthEntries.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={getMoodChartData()}
+                  margin={{ top: 30, right: 30, left: 20, bottom: 40 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke={"text-[var(--border)]"}
+                  />
+                  <XAxis
+                    dataKey="name"
+                    tick={false}
+                    axisLine={{ stroke: "text-[var(--border)]" }}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tickLine={false}
+                    axisLine={{ stroke: "text-[var(--border)]" }}
+                  />
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    cursor={{ fill: "transparent" }}
+                  />
+                  <Bar dataKey="count" className="cursor-pointer">
+                    {getMoodChartData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                    <LabelList
+                      dataKey="emoji"
+                      position="top"
+                      style={{ fontSize: "20px" }}
+                      offset={10}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center">
+                <p className={`text-sm italic text-[var(--text-secondary)]`}>
+                  No mood data for {getCurrentMonthName()} yet...
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div
+            className={`text-xs mt-4 text-center text-[var(--text-secondary)]`}
+          >
+            Based on {currentMonthEntries.length} entries this month. Click a
+            bar to filter.
+          </div>
+        </div>
       </div>
     </div>
   );

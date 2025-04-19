@@ -38,3 +38,7 @@ A personal space to simplify life by allowing users to reflect, express, and tra
 ## 💡 Vision
 
 To create a cozy digital space that helps people slow down, reflect, and feel more in control of their day-to-day emotions.
+
+VY987ZTVKX
+BCGNCLQGXT
+73WVTGBR56
