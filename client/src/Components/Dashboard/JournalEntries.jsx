@@ -167,7 +167,7 @@ const JournalEntries = () => {
         }
 
         const response = await API.get(
-          `/journals/${user._id}/collection/${decodedCollection}`
+          `/journal/journals/${user._id}/collection/${decodedCollection}`
         );
         const journals = response.data.journals || [];
         setJournalEntries(journals);
@@ -254,7 +254,7 @@ const JournalEntries = () => {
   const deleteEntry = async (id) => {
     if (window.confirm("Are you sure you want to delete this journal entry?")) {
       try {
-        await API.delete(`/journal/${id}`);
+        await API.delete(`/journal/journal/${id}`);
         setJournalEntries((prevEntries) =>
           prevEntries.filter((entry) => entry._id !== id)
         );

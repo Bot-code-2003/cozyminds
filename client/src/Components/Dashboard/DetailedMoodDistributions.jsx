@@ -95,7 +95,7 @@ const DetailedMoodDistributions = () => {
           navigate("/login");
           return;
         }
-        const response = await API.get(`/journals/${user.id}`);
+        const response = await API.get(`/journal/journals/${user.id}`);
         setJournalEntries(response.data.journals || []);
         setFilteredEntries(response.data.journals || []);
       } catch (err) {

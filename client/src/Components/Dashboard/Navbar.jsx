@@ -62,7 +62,7 @@ const Navbar = ({ name = "New Entry", link = "/journaling-alt" }) => {
 
     const fetchMails = async () => {
       try {
-        const response = await API.get(`/mails/${userId}`);
+        const response = await API.get(`/mail/mails/${userId}`);
         const fetchedMails = response.data.mails;
         setMails(fetchedMails);
         setHasUnreadMails(fetchedMails.some((mail) => !mail.read));

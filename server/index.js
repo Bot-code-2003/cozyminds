@@ -26,9 +26,9 @@ app.get("/", (req, res) => {
 });
 
 // Use routers
-app.use("/", userRoutes); // All user routes under /api
-app.use("/", journalRoutes); // All journal routes under /api
-app.use("/", mailRoutes); // Add mail routes
+app.use("/user", userRoutes); // All user routes under /api
+app.use("/journal", journalRoutes); // All journal routes under /api
+app.use("/mail", mailRoutes); // Add mail routes
 
 // Connect to MongoDB and start the server
 mongoose

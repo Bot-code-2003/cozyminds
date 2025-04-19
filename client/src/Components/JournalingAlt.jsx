@@ -106,7 +106,7 @@ const JournalingAlt = () => {
 
         setAvailableThemes(themes);
 
-        const response = await API.get(`/journals/${userData._id}`);
+        const response = await API.get(`/journal/journals/${userData._id}`);
         const journals = response.data.journals || [];
 
         // Get unique tags
@@ -230,7 +230,7 @@ const JournalingAlt = () => {
         collections: selectedCollections,
         theme: selectedTheme, // Add selected theme to journal entry
       };
-      await API.post("/saveJournal", journalEntry);
+      await API.post("/journal/saveJournal", journalEntry);
       setIsSaved(true);
       setTimeout(() => navigate("/collections"), 1000);
     } catch (error) {

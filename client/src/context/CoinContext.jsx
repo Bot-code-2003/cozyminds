@@ -81,7 +81,7 @@ export const CoinProvider = ({ children }) => {
 
       const newCoins = (user.coins || 0) + coinsToAdd;
 
-      const response = await API.put(`/user/${userId}`, {
+      const response = await API.put(`/user/user/${userId}`, {
         coins: newCoins,
         lastVisited: new Date(),
       });
@@ -127,7 +127,7 @@ export const CoinProvider = ({ children }) => {
         newInventory.push({ ...item, quantity: 1 });
       }
 
-      const response = await API.put(`/user/${user._id}`, {
+      const response = await API.put(`/user/user/${user._id}`, {
         coins: newCoins,
         inventory: newInventory,
       });

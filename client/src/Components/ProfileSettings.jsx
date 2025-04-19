@@ -61,7 +61,7 @@ const ProfileSettings = () => {
           gender: user.gender || "",
           subscribe: user.subscribe || false,
         });
-        const { data } = await API.get(`/journals/${user.id}`);
+        const { data } = await API.get(`/user/journals/${user.id}`);
         const entries = data.journals || [];
         const words = entries.reduce((sum, e) => sum + (e.wordCount || 0), 0);
         const sorted = [...entries].sort(
@@ -91,7 +91,7 @@ const ProfileSettings = () => {
         ...form,
         age: form.age ? parseInt(form.age) : null,
       };
-      await API.put(`/user/${userData.id}`, updated);
+      await API.put(`/user/user/${userData.id}`, updated);
       sessionStorage.setItem("user", JSON.stringify(updated));
       setUserData(updated);
       setSuccess("Profile updated");
@@ -109,12 +109,12 @@ const ProfileSettings = () => {
     if (passwords.new !== passwords.confirm)
       return setError("Passwords do not match");
     try {
-      const res = await API.post("/verify-password", {
+      const res = await API.post("/user/verify-password", {
         userId: userData.id,
         password: passwords.current,
       });
       if (!res.data.valid) return setError("Incorrect current password");
-      await API.put(`/user/${userData.id}/password`, {
+      await API.put(`/user/user/${userData.id}/password`, {
         newPassword: passwords.new,
       });
       setSuccess("Password changed");
@@ -129,7 +129,7 @@ const ProfileSettings = () => {
 
   const handleDelete = async () => {
     try {
-      await API.delete(`/user/${userData.id}`);
+      await API.delete(`/user/user/${userData.id}`);
       sessionStorage.removeItem("user");
       navigate("/");
     } catch {

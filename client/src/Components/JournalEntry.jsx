@@ -94,7 +94,7 @@ const JournalEntry = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await API.get(`/journal/${id}`);
+        const response = await API.get(`/journal/journal/${id}`);
         console.log("Journal entry:", response.data.journal);
         setEntry(response.data.journal);
       } catch (err) {

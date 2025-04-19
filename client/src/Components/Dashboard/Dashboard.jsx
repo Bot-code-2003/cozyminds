@@ -95,7 +95,7 @@ const Dashboard = () => {
         setInventory(user.inventory || []);
 
         // Fetch journal entries
-        const response = await API.get(`/journals/${user._id}`);
+        const response = await API.get(`/journal/journals/${user._id}`);
         setJournalEntries(response.data.journals || []);
         setFilteredEntries(response.data.journals || []);
       } catch (err) {
