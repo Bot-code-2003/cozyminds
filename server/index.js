@@ -11,10 +11,6 @@ const app = express();
 dotenv.config();
 
 const mongoURL = process.env.MONGODB_URL;
-app.use(cors({ origin: "https://cozyminds.vercel.app" }));
-
-// Handle preflight requests
-app.options("*", cors());
 
 // const mongoURL = "mongodb://localhost:27017/CozyMind";
 // app.use(cors());
@@ -22,15 +18,17 @@ app.options("*", cors());
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 // Root route
-app.get("/", (req, res) => {
-  res.send("Hello from Cozy Minds!");
-});
+
+app.use(cors({ origin: "https://cozyminds.vercel.app" }));
 
 // Use routers
 app.use("/user", userRoutes); // All user routes under /api
 app.use("/journal", journalRoutes); // All journal routes under /api
 app.use("/mail", mailRoutes); // Add mail routes
 
+app.get("/", (req, res) => {
+  res.send("Hello from Cozy Minds!");
+});
 // Connect to MongoDB and start the server
 mongoose
   .connect(mongoURL)
