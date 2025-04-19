@@ -22,12 +22,11 @@ app.use(
 // Handle preflight requests
 app.options("*", cors());
 
-app.use(express.json());
-app.use(urlencoded({ extended: true }));
-
 // const mongoURL = "mongodb://localhost:27017/CozyMind";
 // app.use(cors());
 
+app.use(express.json());
+app.use(urlencoded({ extended: true }));
 // Root route
 app.get("/", (req, res) => {
   res.send("Hello from Cozy Minds!");
@@ -48,4 +47,4 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-export const handler = serverless(app);
+// export const handler = serverless(app);
