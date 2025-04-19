@@ -33,7 +33,7 @@ const InGameMail = ({
   // Mark mail as read
   const markAsRead = async (mailId) => {
     try {
-      await API.put(`/mail/${mailId}/read`, { userId });
+      await API.put(`/mail/mail/${mailId}/read`, { userId });
       const updatedMails = mails.map((mail) =>
         mail.id === mailId ? { ...mail, read: true } : mail
       );
@@ -47,7 +47,7 @@ const InGameMail = ({
   // Delete mail
   const deleteMail = async (mailId) => {
     try {
-      await API.delete(`/mail/${mailId}`, { data: { userId } });
+      await API.delete(`/mail/mail/${mailId}`, { data: { userId } });
       const updatedMails = mails.filter((mail) => mail.id !== mailId);
       setMails(updatedMails);
       setHasUnreadMails(updatedMails.some((mail) => !mail.read));
