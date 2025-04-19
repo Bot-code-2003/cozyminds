@@ -2,8 +2,8 @@
 import express from "express";
 import User from "../models/User.js";
 import Mail from "../models/Mail.js";
-import mongoose from "mongoose";
 import Journal from "../models/Journal.js"; // Import Journal model
+import mongoose from "mongoose";
 
 const router = express.Router();
 
