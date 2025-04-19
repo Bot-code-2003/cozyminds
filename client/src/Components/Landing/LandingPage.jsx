@@ -47,7 +47,7 @@ const LandingPage = () => {
   useEffect(() => {
     const numOfUsers = async () => {
       try {
-        const response = await API.get("/users");
+        const response = await API.get("/user/users");
         console.log("Number of users:", response.data.users);
         setUserCount(response.data.users);
       } catch (err) {
