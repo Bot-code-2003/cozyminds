@@ -48,4 +48,4 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-// export const handler = serverless(app);
+export const handler = serverless(app);
