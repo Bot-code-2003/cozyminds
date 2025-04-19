@@ -1,4 +1,3 @@
-// index.js
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -9,7 +8,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const app = express();
-const mongoURL = process.env.MONGODB_URL;
 
 app.use(cors({ origin: "https://cozyminds.vercel.app" }));
 app.options("*", cors());
@@ -24,10 +22,9 @@ app.use("/user", userRoutes);
 app.use("/journal", journalRoutes);
 app.use("/mail", mailRoutes);
 
-// ✅ MongoDB connect here, but don't use app.listen()
-mongoose.connect(mongoURL, {
+mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-export default app; // ✅ export instead of listen
+export default app; // ✅ No app.listen()

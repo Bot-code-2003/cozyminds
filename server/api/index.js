@@ -1,4 +1,3 @@
-// server/api/index.js
 import app from "../index.js";
 import { createServer } from "http";
 
