@@ -95,7 +95,7 @@ const DetailedMoodDistributions = () => {
           navigate("/login");
           return;
         }
-        const response = await API.get(`/journal/journals/${user.id}`);
+        const response = await API.get(`/journals/${user._id}`);
         setJournalEntries(response.data.journals || []);
         setFilteredEntries(response.data.journals || []);
       } catch (err) {
@@ -301,7 +301,11 @@ const DetailedMoodDistributions = () => {
       } font-sans transition-colors duration-300`}
     >
       {/* Top navigation bar */}
-      <Navbar handleLogout={handleLogout} name="Dashboard" link="/" />
+      <Navbar
+        handleLogout={handleLogout}
+        name="New Entry"
+        link="/journaling-alt"
+      />
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-6 py-8">

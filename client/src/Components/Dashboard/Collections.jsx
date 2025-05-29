@@ -37,7 +37,7 @@ const Collections = () => {
         }
 
         // Fetch journal entries from the server
-        const response = await API.get(`/journal/journals/${user._id}`);
+        const response = await API.get(`/journals/${user._id}`);
         setJournalEntries(response.data.journals || []);
 
         // Set collections - always include "All" first
@@ -124,9 +124,7 @@ const Collections = () => {
     try {
       // Call API to delete the collection
       await API.delete(
-        `/journal/collection/${userData._id}/${encodeURIComponent(
-          collectionToDelete
-        )}`
+        `/collection/${userData._id}/${encodeURIComponent(collectionToDelete)}`
       );
 
       // Update the local state to reflect the change
@@ -137,7 +135,7 @@ const Collections = () => {
       setCollectionToDelete(null);
 
       // Optionally refresh the journal entries to ensure the UI is in sync
-      const response = await API.get(`/journal/journals/${userData._id}`);
+      const response = await API.get(`/journals/${userData._id}`);
       setJournalEntries(response.data.journals || []);
     } catch (err) {
       console.error("Error deleting collection:", err);

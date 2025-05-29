@@ -60,9 +60,26 @@ const userSchema = new mongoose.Schema(
     },
     inventory: {
       type: Array,
-      default: [],
+      default: () => [
+        {
+          id: "theme_default",
+          name: "Default",
+          description: "A simple, no-frills journal theme",
+          color: "#cccccc", // a plain gray
+          category: "theme",
+          isEmoji: false,
+          gradient: null,
+          price: 0,
+          quantity: 1,
+        },
+      ],
     },
-    // Remove activeTheme field as themes are now per-journal
+
+    // New field for active mail theme
+    activeMailTheme: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );

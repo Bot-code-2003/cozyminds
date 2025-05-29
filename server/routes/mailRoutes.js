@@ -8,7 +8,7 @@ const router = express.Router();
 // Send mail to all users (SiteMaster only)
 router.post("/sendMail", async (req, res) => {
   try {
-    const { title, content, sender = "Cozy Minds Team" } = req.body;
+    const { title, content, sender = "Starlit Journals Team" } = req.body;
 
     // Validate required fields
     if (!title || !content) {
@@ -36,6 +36,7 @@ router.post("/sendMail", async (req, res) => {
       content,
       recipients,
       date: new Date(),
+      expiryDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // Mail expires after 10 days
     });
 
     await newMail.save();
@@ -72,14 +73,23 @@ router.get("/mails/:userId", async (req, res) => {
     }).sort({ date: -1 });
 
     // Transform mails to match the frontend format
-    const formattedMails = mails.map((mail) => ({
-      id: mail._id,
-      sender: mail.sender,
-      title: mail.title,
-      content: mail.content,
-      date: mail.date.toISOString(),
-      read: mail.recipients.find((r) => r.userId.toString() === userId).read, // Check if the user has read the mail
-    }));
+    const formattedMails = mails.map((mail) => {
+      const recipient = mail.recipients.find(
+        (r) => r.userId.toString() === userId
+      );
+      return {
+        id: mail._id,
+        sender: mail.sender,
+        title: mail.title,
+        content: mail.content,
+        date: mail.date.toISOString(),
+        expiryDate: mail.expiryDate?.toISOString(),
+        read: recipient.read,
+        mailType: mail.mailType,
+        rewardAmount: mail.rewardAmount || 0,
+        rewardClaimed: recipient.rewardClaimed || false,
+      };
+    });
 
     res.status(200).json({ mails: formattedMails });
   } catch (error) {
@@ -129,8 +139,8 @@ router.put("/mail/:id/read", async (req, res) => {
   }
 });
 
-// Delete a mail for a specific user
-router.delete("/mail/:id", async (req, res) => {
+// Claim reward from mail
+router.put("/mail/:id/claim-reward", async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
@@ -149,28 +159,83 @@ router.delete("/mail/:id", async (req, res) => {
       return res.status(404).json({ message: "Mail not found." });
     }
 
+    // Check if mail is a reward mail
+    if (mail.mailType !== "reward") {
+      return res
+        .status(400)
+        .json({ message: "This mail has no reward to claim." });
+    }
+
     // Check if user is a recipient
-    const recipientIndex = mail.recipients.findIndex(
+    const recipient = mail.recipients.find(
       (r) => r.userId.toString() === userId
     );
-    if (recipientIndex === -1) {
+    if (!recipient) {
       return res
         .status(403)
         .json({ message: "User is not a recipient of this mail." });
     }
 
-    // Remove user from recipients
-    mail.recipients.splice(recipientIndex, 1);
-
-    // If no recipients remain, delete the mail entirely
-    if (mail.recipients.length === 0) {
-      await Mail.deleteOne({ _id: id });
-      return res.status(200).json({ message: "Mail deleted successfully." });
+    // Check if reward already claimed
+    if (recipient.rewardClaimed) {
+      return res.status(400).json({ message: "Reward already claimed." });
     }
 
-    // Otherwise, save the updated mail
+    // Find user and update coins
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Get reward amount (default to 50 if not specified)
+    const rewardAmount = mail.rewardAmount || 50;
+
+    // Add coins to user
+    user.coins = (user.coins || 0) + rewardAmount;
+    await user.save();
+
+    // Mark reward as claimed
+    recipient.rewardClaimed = true;
+    recipient.read = true; // Also mark as read
     await mail.save();
-    res.status(200).json({ message: "Mail deleted for user." });
+
+    res.status(200).json({
+      message: `Reward of ${rewardAmount} coins claimed successfully.`,
+      newCoinsBalance: user.coins,
+    });
+  } catch (error) {
+    console.error("Error claiming reward:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+});
+
+// Cleanup function to delete expired mails
+const cleanupExpiredMails = async () => {
+  try {
+    const currentDate = new Date();
+    const result = await Mail.deleteMany({
+      expiryDate: { $lt: currentDate },
+    });
+
+    console.log(`Cleaned up ${result.deletedCount} expired mails`);
+  } catch (error) {
+    console.error("Error during mail cleanup:", error);
+  }
+};
+
+// Run cleanup every day
+const CLEANUP_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
+setInterval(cleanupExpiredMails, CLEANUP_INTERVAL);
+
+// Run cleanup once when server starts
+cleanupExpiredMails();
+
+// Delete mail
+router.delete("/mail/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Mail.findByIdAndDelete(id);
+    res.status(200).json({ message: "Mail deleted successfully." });
   } catch (error) {
     console.error("Error deleting mail:", error);
     res.status(500).json({ message: "Server Error", error: error.message });

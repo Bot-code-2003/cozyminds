@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+>
+  <!-- Main Pages -->
+  <url>
+    <loc>https://starlitjournals.vercel.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://starlitjournals.vercel.app/terms-of-service</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://starlitjournals.vercel.app/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Blog List Page -->
+  <url>
+    <loc>https://starlitjournals.vercel.app/starlitjournals-blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Individual Blogs -->
+  <url>
+    <loc>https://starlitjournals.vercel.app/blog/easy-journaling-prompts-feel-happier</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://starlitjournals.vercel.app/blog/journal-like-pro-keep-cozy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://starlitjournals.vercel.app/blog/writing-about-pets-feel-calm</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://starlitjournals.vercel.app/blog/cozy-journaling-spot-you-love</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://starlitjournals.vercel.app/blog/fun-gratitude-prompts-smile</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>

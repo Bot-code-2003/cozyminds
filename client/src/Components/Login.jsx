@@ -29,7 +29,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setError(null);
     try {
-      const res = await API.post("/user/login", form);
+      const res = await API.post("/login", form);
       const { user, coinsEarned } = res.data;
 
       console.log("Login successful, coins earned:", coinsEarned);

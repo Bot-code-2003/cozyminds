@@ -34,7 +34,7 @@ const SiteMaster = () => {
     }
 
     try {
-      const response = await API.post("/user/sendMail", {
+      const response = await API.post("/sendMail", {
         sender: formData.sender,
         title: formData.title,
         content: formData.content,

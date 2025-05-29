@@ -1,236 +1,191 @@
-import {
-  Coffee,
-  Zap,
-  Brain,
-  BarChart2,
-  TrendingUp,
-  Search,
-  Star,
-  Sparkles,
-  BookOpenCheck,
-  Leaf,
-  Smile,
-  Sliders,
-  ArrowRight,
-} from "lucide-react";
+import { Sparkles, Smile } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import Home from "../../assets/home3.png";
+import Reward from "../../assets/reward.png";
+import MailIG from "../../assets/mail.png";
+import Shop from "../../assets/shop.png";
+import Mood from "../../assets/mood.png";
+import AI from "../../assets/AI.png";
+
+import { useDarkMode } from "../../context/ThemeContext";
+
+import { Gift, BarChart3, Mail, ShoppingBag, ChevronRight } from "lucide-react";
 const Features = () => {
-  const features = [
-    {
-      icon: <Coffee size={32} />,
-      label: "COZY BOOST",
-      title: "Cozy Spark",
-      description:
-        "A cozy popup once a day with quotes, reflections, and gentle actions to ease your mind and brighten your moment.",
-      list: [
-        {
-          icon: <Sparkles size={18} />,
-          text: "Uplifting thought for the day",
-        },
-        {
-          icon: <Zap size={18} />,
-          text: "One tiny step to center yourself",
-        },
-        {
-          icon: <Brain size={18} />,
-          text: "Something cozy to hold close",
-        },
-      ],
-      color: "F4A261",
-      bgLight: "FFD7BA",
-      bgDark: "3A2E2A",
-      position: "top-left",
-    },
-    {
-      icon: <BarChart2 size={32} />,
-      label: "ANALYTICS",
-      title: "Mood Grid",
-      description:
-        "Track your pulse, see what shapes your calm, and take control of your mental landscape.",
-      list: [
-        {
-          icon: <TrendingUp size={18} />,
-          text: "Map your emotional flow",
-        },
-        {
-          icon: <Search size={18} />,
-          text: "Pinpoint your triggers",
-        },
-        {
-          icon: <Star size={18} />,
-          text: "Own your mental space",
-        },
-      ],
-      color: "61A5C2",
-      bgLight: "A9D6E5",
-      bgDark: "2A3A36",
-      position: "top-right",
-    },
-    {
-      icon: <Sparkles size={32} />,
-      label: "STORYLINE",
-      title: "Cozy Story Journey",
-      description:
-        "Follow a month-long evolving visual story that blossoms as you return day by day.",
-      list: [
-        {
-          icon: <Leaf size={18} />,
-          text: "Track your daily growth",
-        },
-        {
-          icon: <BookOpenCheck size={18} />,
-          text: "Each day unlocks a chapter",
-        },
-        {
-          icon: <Smile size={18} />,
-          text: "Your calm world blossoms",
-        },
-      ],
-      color: "A3C9A8",
-      bgLight: "D7EDD7",
-      bgDark: "263326",
-      position: "bottom-left",
-    },
-    {
-      icon: <Brain size={32} />,
-      label: "INSIGHTS",
-      title: "Smart Recommendations",
-      description: "Unlock extra clever tips to level up your experience!",
-      list: [
-        {
-          icon: <Sliders size={18} />,
-          text: "Personalized suggestions",
-        },
-        {
-          icon: <TrendingUp size={18} />,
-          text: "Optimize your journey",
-        },
-        {
-          icon: <Star size={18} />,
-          text: "Stay ahead with insights",
-        },
-      ],
-      color: "D4C4A1",
-      bgLight: "F1E8D9",
-      bgDark: "3F3A2E",
-      position: "bottom-right",
-    },
-  ];
-
+  const { darkMode, setDarkMode } = useDarkMode();
   return (
-    <section className="relative z-10 w-full max-w-6xl mt-20 px-6">
-      <div className="text-center mb-16">
-        <div className="inline-block mb-4 px-3 py-1 border-2 border-[#1A1A1A] dark:border-[#F8F1E9] text-xs font-medium tracking-wider">
-          FEATURES
+    <div className="relative z-10 px-1 sm:px-6 ">
+      {/* Features Section */}
+      <section className="relative z-10 w-full py-12 sm:py-24 ">
+        <div className="text-center mb-20">
+          <div className="inline-block mb-6 px-4 py-1.5 bg-[#f0e6d9] dark:bg-[#2a2520] rounded-full text-xs font-medium tracking-wider text-[#5999a8] dark:text-[#7ab8c7] shadow-sm">
+            STANDOUT FEATURES
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 font-serif">
+            Cozy Features
+          </h2>
+          <p className="text-lg opacity-70 max-w-xl mx-auto">
+            Designed to bring clarity and peace to your daily routine
+          </p>
         </div>
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
-          Standout Features
-        </h2>
-        <p className="text-lg opacity-70 max-w-xl mx-auto">
-          Designed to bring clarity and peace to your daily routine
-        </p>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {features.map((feature, index) => (
-          <div
-            key={index}
-            className="group relative border-2 border-[#1A1A1A] dark:border-[#F8F1E9] transition-all duration-300 hover:-translate-y-1"
-          >
-            {/* Accent corner */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          {[
+            {
+              icon: <Gift size={32} />,
+              image: Reward,
+              label: "REWARDS",
+              title: "Daily Journaling Rewards",
+              description:
+                "Earn coins every day you write. Hit streaks for surprise bonuses and limited collectibles!",
+              color: "6BC9B5", // Ocean jade
+              bgLight: "DAD8DC", // Deeper aqua tide
+              bgDark: "123C3A", // Deep kelp night
+            },
+            {
+              icon: <BarChart3 size={32} />,
+              image: Mood,
+              label: "INSIGHTS",
+              title: "Mood Insights",
+              description:
+                "Visualize how your moods shift over time with beautiful charts. Reflect deeper with every entry you make.",
+              color: "6BC9B5",
+              bgLight: "DAD8DC",
+              bgDark: "123C3A",
+            },
+            {
+              icon: <Mail size={32} />,
+              image: MailIG,
+              label: "MAIL",
+              title: "In-Site Mail",
+              description:
+                "Receive heartwarming greetings, seasonal tales, and delightful surprise gifts from the charming characters of Starlit Journals, right in your in-site mailbox.",
+              color: "6BC9B5",
+              bgLight: "DAD8DC",
+              bgDark: "123C3A",
+            },
+            {
+              icon: <ShoppingBag size={32} />,
+              image: Shop,
+              label: "SHOP",
+              title: "Inventory & Shop",
+              description:
+                "Buy sticker packs, journal themes, and magical mail styles. Activate, customize, and make it yours.",
+              color: "6BC9B5",
+              bgLight: "DAD8DC",
+              bgDark: "123C3A",
+            },
+          ].map((feature, index) => (
             <div
-              className={`absolute ${
-                feature.position === "top-left"
-                  ? "-top-3 -left-3"
-                  : feature.position === "top-right"
-                  ? "-top-3 -right-3"
-                  : feature.position === "bottom-left"
-                  ? "-bottom-3 -left-3"
-                  : "-bottom-3 -right-3"
-              } 
-                            w-6 h-6 bg-[#${feature.color}] z-10`}
-            ></div>
-
-            <div
-              className={`p-8 h-full flex flex-col`}
-              style={{
-                backgroundColor: `var(--dark-mode, false) ? #${feature.bgDark} : #${feature.bgLight}`,
-              }}
+              key={index}
+              className="group relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border-2"
             >
-              <div className="flex justify-between items-start mb-6">
-                <div
-                  className={`p-3 border-2 border-[#1A1A1A] dark:border-[#F8F1E9] text-[#${feature.color}]`}
-                >
-                  {feature.icon}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#5999A8]/10 to-transparent rounded-bl-full"></div>
+
+              <div className="p-8 flex flex-col md:flex-row gap-6">
+                <div className="md:w-1/2 flex flex-col justify-between">
+                  <div>
+                    <div className="mb-6 px-3 py-1.5 inline-block rounded-full text-xs font-bold bg-[#1A1A1A]/10 dark:bg-[#F8F1E9]/10">
+                      {feature.label}
+                    </div>
+                    <h3 className="text-2xl font-bold mb-4 font-serif">
+                      {feature.title}
+                    </h3>
+                    <p className="opacity-80 mb-6">{feature.description}</p>
+                  </div>
+
+                  {/* <Link
+                    to={`/features/${feature.title
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
+                    className="inline-flex items-center text-sm font-medium text-[#5999a8] dark:text-[#7ab8c7] hover:underline group"
+                  >
+                    <span>Learn more</span>
+                    <ChevronRight
+                      size={16}
+                      className="ml-1 group-hover:translate-x-1 transition-transform"
+                    />
+                  </Link> */}
                 </div>
-                <div className="px-3 py-1 text-xs font-bold bg-[#1A1A1A] dark:bg-[#F8F1E9] text-white dark:text-[#1A1A1A]">
-                  {feature.label}
+
+                <div className="md:w-1/2 aspect-square rounded-xl overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-lg">
+                  <img
+                    src={feature.image || "/placeholder.svg"}
+                    alt={`Illustration for ${feature.title}`}
+                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                  />
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-              <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
-              <p className="opacity-80 mb-6">{feature.description}</p>
+      {/* Coming Soon Section */}
+      <section className="w-full py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#5999a8]/10 to-[#7ab8c7]/10 dark:from-[#5999a8]/5 dark:to-[#7ab8c7]/5"></div>
 
-              <ul className="space-y-4 mb-2">
-                {feature.list.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <div className={`mt-1 text-[#${feature.color}]`}>
-                      {item.icon}
-                    </div>
-                    <span>{item.text}</span>
-                  </li>
-                ))}
-              </ul>
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-block mb-6 px-4 py-1.5 bg-[#f0e6d9] dark:bg-[#2a2520] rounded-full text-xs font-medium tracking-wider text-[#5999a8] dark:text-[#7ab8c7] shadow-sm">
+                COMING SOON
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 font-serif">
+                AI-Powered Cozy Assistant
+              </h2>
+              <p className="text-lg opacity-80 mb-8 leading-relaxed">
+                A gentle companion to guide your journaling with thoughtful
+                prompts, mood insights, and cozy tips—crafted for calm and
+                clarity.
+              </p>
 
-              {/* <Link
-                to={`/features/${feature.title
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")}`}
-                className="mt-auto inline-flex items-center text-sm font-medium text-[#1A1A1A] dark:text-[#F8F1E9] hover:text-[#${feature.color}] dark:hover:text-[#${feature.color}] group-hover:underline transition-colors"
-              >
-                Learn more
-                <ArrowRight
-                  size={14}
-                  className="ml-1 group-hover:translate-x-1 transition-transform"
+              {/* <form className="flex flex-col sm:flex-row gap-3 max-w-md">
+                <input
+                  type="email"
+                  placeholder="Enter your email for early access"
+                  className="flex-1 px-4 py-3 rounded-lg border-2 border-[#5999a8]/20 dark:border-[#7ab8c7]/20 bg-white/80 dark:bg-[#2a2520]/80 backdrop-blur-sm focus:outline-none focus:border-[#5999a8] dark:focus:border-[#7ab8c7] transition-all duration-300"
                 />
-              </Link> */}
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-gradient-to-r from-[#5999a8] to-[#7ab8c7] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 whitespace-nowrap"
+                >
+                  Notify Me
+                </button>
+              </form> */}
+            </div>
+
+            <div className="relative">
+              <div className="aspect-square max-w-md mx-auto relative">
+                {/* Decorative elements */}
+                <div className="absolute -top-6 -left-6 w-full h-full bg-[#f0e6d9] dark:bg-[#2a2520] rounded-2xl -rotate-3 transform"></div>
+                <div className="absolute -top-3 -left-3 w-full h-full border-2 border-[#5999a8] dark:border-[#7ab8c7] rounded-2xl rotate-1 transform"></div>
+
+                {/* Main image */}
+                <div className="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-xl">
+                  <img
+                    src={AI || "/placeholder.svg"}
+                    alt="AI assistant concept - a friendly, cozy AI character helping with journaling"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Floating elements */}
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#f0e6d9] dark:bg-[#2a2520] rounded-full shadow-lg z-20 flex items-center justify-center">
+                  <div className="text-center">
+                    <Sparkles
+                      size={20}
+                      className="mx-auto mb-1 text-[#5999a8] dark:text-[#7ab8c7]"
+                    />
+                    <span className="text-xs font-medium">AI Magic</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Feature highlight box */}
-      <div className="mt-16 border-2 border-[#F4A261] p-8 relative">
-        <div className="absolute -top-3 -right-3 px-3 py-1 bg-[#F4A261] text-[#1A1A1A] text-xs font-bold">
-          NEW
         </div>
-
-        <div className="flex flex-col md:flex-row items-center gap-8">
-          <div className="md:w-2/3">
-            <h3 className="text-2xl font-bold mb-4">
-              Coming Soon: AI-Powered Journaling Assistant
-            </h3>
-            <p className="opacity-80 mb-4">
-              Our new AI assistant will help guide your journaling practice with
-              personalized prompts and insights based on your mood patterns and
-              goals.
-            </p>
-            {/* <Link
-              to="/waitlist"
-              className="inline-flex items-center gap-2 px-6 py-2 bg-[#1A1A1A] dark:bg-[#F8F1E9] text-white dark:text-[#1A1A1A] hover:bg-[#F4A261] dark:hover:bg-[#F4A261] transition-colors"
-            >
-              Join the waitlist
-              <ArrowRight size={16} />
-            </Link> */}
-          </div>
-
-          <div className="md:w-1/3 aspect-square bg-[#F4A261]/10 dark:bg-[#F4A261]/5 border-2 border-[#1A1A1A] dark:border-[#F8F1E9] flex items-center justify-center">
-            <Sparkles size={64} className="text-[#F4A261]" />
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

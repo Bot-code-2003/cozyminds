@@ -32,31 +32,31 @@ const Dashboard = () => {
       emoji: "😄",
       name: "Happy",
       description: "Feeling joyful and content",
-      color: "#70B2C0",
+      color: "#4FACFE",
     },
     {
       emoji: "😐",
       name: "Neutral",
       description: "Neither good nor bad",
-      color: "#83C5BE",
+      color: "#00F2FE",
     },
     {
       emoji: "😔",
       name: "Sad",
       description: "Feeling down or blue",
-      color: "#7A82AB",
+      color: "#6A7FDB",
     },
     {
       emoji: "😡",
       name: "Angry",
       description: "Frustrated or irritated",
-      color: "#E07A5F",
+      color: "#FF5E62",
     },
     {
       emoji: "😰",
       name: "Anxious",
       description: "Worried or nervous",
-      color: "#BC96E6",
+      color: "#B721FF",
     },
     {
       emoji: "🥱",
@@ -68,13 +68,13 @@ const Dashboard = () => {
       emoji: "🤔",
       name: "Reflective",
       description: "Thoughtful and introspective",
-      color: "#81B29A",
+      color: "#21D4FD",
     },
     {
       emoji: "🥳",
       name: "Excited",
       description: "Enthusiastic and energized",
-      color: "#F9C74F",
+      color: "#FBAB7E",
     },
   ];
 
@@ -95,7 +95,7 @@ const Dashboard = () => {
         setInventory(user.inventory || []);
 
         // Fetch journal entries
-        const response = await API.get(`/journal/journals/${user._id}`);
+        const response = await API.get(`/journals/${user._id}`);
         setJournalEntries(response.data.journals || []);
         setFilteredEntries(response.data.journals || []);
       } catch (err) {
@@ -181,40 +181,57 @@ const Dashboard = () => {
   const wordCountStats = getWordCountStats();
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 text-primary bg-[var(--bg-primary)]`}
-    >
+    <div className="min-h-screen transition-colors duration-300 text-[var(--text-primary)] bg-[var(--bg-primary)]">
       <Navbar
         handleLogout={handleLogout}
         name="New Entry"
         link={"/journaling-alt"}
       />
-      <MainSection
-        darkMode={darkMode}
-        journalEntries={journalEntries}
-        userData={userData}
-        wordCountStats={wordCountStats}
-        formatDate={formatDate}
-      />
-      <MoodDistribution journalEntries={journalEntries} />
-      {isLoading && (
-        <div>
-          <p>Loading journal entries...</p>
-        </div>
-      )}
-      {error && (
-        <div>
-          <p>Error</p>
-          <p className="opacity-70">{error}</p>
-        </div>
-      )}
-      {!isLoading && !error && (
-        <RecentJournals
-          entries={filteredEntries.slice(0, 3)}
-          darkMode={darkMode}
-          formatDate={formatDate}
-        />
-      )}
+
+      <div className="container mx-auto px-4 pb-12">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-pulse space-y-8 w-full max-w-7xl">
+              <div className="h-12 bg-[var(--accent)]/20 rounded w-1/3"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="h-56 bg-[var(--accent)]/10 rounded"></div>
+                <div className="h-56 bg-[var(--accent)]/10 rounded"></div>
+                <div className="h-56 bg-[var(--accent)]/10 rounded"></div>
+              </div>
+              <div className="h-64 bg-[var(--accent)]/10 rounded"></div>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="p-8 bg-[var(--bg-secondary)] rounded-lg shadow-lg text-center max-w-md">
+              <h2 className="text-2xl mb-4">Unable to Load Dashboard</h2>
+              <p className="text-[var(--text-secondary)] mb-6">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent)]/80 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <MainSection
+              darkMode={darkMode}
+              journalEntries={journalEntries}
+              userData={userData}
+              wordCountStats={wordCountStats}
+              formatDate={formatDate}
+            />
+            <MoodDistribution journalEntries={journalEntries} />
+            <RecentJournals
+              entries={filteredEntries.slice(0, 3)}
+              darkMode={darkMode}
+              formatDate={formatDate}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 };

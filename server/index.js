@@ -1,46 +1,52 @@
+// index.js
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import journalRoutes from "./routes/journalRoutes.js";
 import mailRoutes from "./routes/mailRoutes.js";
-import dotenv from "dotenv";
 
 const app = express();
-dotenv.config();
 
-const mongoURL = process.env.MONGODB_URL;
+// const mongoURL =
+//   "mongodb+srv://madisettydharmadeep:cozyminds@cozyminds.yth43.mongodb.net/?retryWrites=true&w=majority&appName=cozyminds";
+// app.use(
+//   cors({
+//     origin: "https://starlitjournals.vercel.app",
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
 
-// Apply CORS early and properly
-app.use(
-  cors({
-    origin: "https://cozyminds.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// Handle preflight requests
 app.options("*", cors());
 
-// JSON/body parser
+const mongoURL = "mongodb://localhost:27017/CozyMind";
+app.use(cors());
+
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
-
-// Debug route
-app.get("/ping", (req, res) => {
-  res.send("Server is alive");
+// Root route
+app.get("/", (req, res) => {
+  res.send("Hello from Starlit Journals!");
 });
 
-// Routes
-app.use("/user", userRoutes);
-app.use("/journal", journalRoutes);
-app.use("/mail", mailRoutes);
+// Use routers
+app.use("/", userRoutes); // All user routes under /api
+app.use("/", journalRoutes); // All journal routes under /api
+app.use("/", mailRoutes); // Add mail routes
 
-// Connect DB
+// Connect to MongoDB and start the server
 mongoose
   .connect(mongoURL)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB Error:", err));
+  .then(() => {
+    app.listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  })
+  .catch((error) => console.log(error));
 
-// Vercel handles the server - do NOT listen here
+// export const handler = serverless(app);
+
 export default app;

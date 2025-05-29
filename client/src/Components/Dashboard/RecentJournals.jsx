@@ -1,171 +1,83 @@
 import { Link } from "react-router-dom";
+import { getCardClass, getThemeDetails } from "./ThemeDetails.js";
+import { useState } from "react";
+import JournalCard from "./JorunalCard.jsx";
 
-// Mood definitions
+// Mood definitions with improved color palette
 const moods = [
-  { emoji: "😄", name: "Happy", color: "#70B2C0" },
-  { emoji: "😐", name: "Neutral", color: "#83C5BE" },
-  { emoji: "😔", name: "Sad", color: "#7A82AB" },
+  { emoji: "😄", name: "Happy", color: "#3EACA8" },
+  { emoji: "😐", name: "Neutral", color: "#547AA5" },
+  { emoji: "😔", name: "Sad", color: "#6A67CE" },
   { emoji: "😡", name: "Angry", color: "#E07A5F" },
-  { emoji: "😰", name: "Anxious", color: "#BC96E6" },
-  { emoji: "🥱", name: "Tired", color: "#8D99AE" },
-  { emoji: "🤔", name: "Reflective", color: "#81B29A" },
-  { emoji: "🥳", name: "Excited", color: "#F9C74F" },
+  { emoji: "😰", name: "Anxious", color: "#9B72CF" },
+  { emoji: "🥱", name: "Tired", color: "#718EBC" },
+  { emoji: "🤔", name: "Reflective", color: "#5D8A66" },
+  { emoji: "🥳", name: "Excited", color: "#F2B147" },
 ];
 
-// Theme icon and text mapping
-const themeDetails = {
-  theme_forest: {
-    icon: "🌲",
-    dateIcon: "🍃",
-    readMoreText: "Wander deeper",
-  },
-  theme_ocean: {
-    icon: "🐠",
-    dateIcon: "🫧",
-    readMoreText: "Dive deeper",
-  },
-  theme_christmas: {
-    icon: "🎄",
-    dateIcon: "❄️",
-    readMoreText: "Unwrap entry",
-  },
-  theme_halloween: {
-    icon: "🎃",
-    dateIcon: "👻",
-    readMoreText: "Enter if you dare",
-  },
-  theme_pets: {
-    icon: "🐶",
-    dateIcon: "🐕",
-    readMoreText: "Pet entry",
-  },
-};
-
 const RecentJournals = ({ entries, darkMode, formatDate }) => {
-  const getCardClass = (theme) => {
-    if (theme === "theme_forest") {
-      return "card-forest";
-    } else if (theme === "theme_ocean") {
-      return "card-ocean";
-    } else if (theme === "theme_christmas") {
-      return "card-christmas";
-    } else if (theme === "theme_halloween") {
-      return "card-halloween";
-    } else if (theme === "theme_pets") {
-      return "card-pets";
-    } else {
-      return darkMode ? "card-dark" : "card-light";
-    }
-  };
-
-  const getThemeDetails = (theme) => {
-    return (
-      themeDetails[theme] || {
-        icon: "📝",
-        dateIcon: "📅",
-        readMoreText: "Read more",
-      }
-    );
-  };
+  // Empty state component
+  const EmptyState = () => (
+    <div className="grid place-items-center py-16 text-center">
+      <div className="w-24 h-24 mb-6 grid place-items-center rounded-full bg-[var(--highlight)] opacity-70">
+        <svg
+          className="w-12 h-12 text-[var(--text-primary)]"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z" />
+        </svg>
+      </div>
+      <h3 className="text-xl font-semibold mb-2 text-[var(--text-primary)]">
+        No journal entries yet
+      </h3>
+      <p className="text-[var(--text-secondary)] max-w-md mb-6">
+        Capture your thoughts and reflections to see them displayed here.
+      </p>
+      <Link
+        to="/new"
+        className="inline-grid grid-flow-col gap-2 items-center bg-[var(--accent)] hover:bg-opacity-90 transition-all duration-200 text-white px-6 py-2 rounded-lg font-medium shadow-sm"
+        aria-label="Create your first journal entry"
+      >
+        <span className="text-lg">+</span> Create First Entry
+      </Link>
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 mb-10 bg-[var(--bg-secondary)] border border-designer rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">
-        Recent Journals
-      </h2>
+    <section className="max-w-6xl mx-auto py-8">
+      <header className="mb-8">
+        <h2 className="text-3xl font-bold text-[var(--text-primary)]">
+          Recent Journals
+        </h2>
+        <p className="text-[var(--text-secondary)] mt-1 text-sm sm:text-base">
+          {entries.length > 0
+            ? `You have ${entries.length} journal ${
+                entries.length === 1 ? "entry" : "entries"
+              }`
+            : "Begin your journaling journey today"}
+        </p>
+      </header>
 
       {entries.length === 0 ? (
-        <p className="text-[var(--text-secondary)] text-sm">
-          No recent journal entries. Start writing to fill this space!
-        </p>
+        <EmptyState />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {entries.map((entry) => {
-            const moodData = moods.find((m) => m.name === entry.mood);
-            const currentTheme = getThemeDetails(entry.theme);
-            const cardClass = getCardClass(entry.theme);
-
-            return (
-              <Link
-                to={`/journal/${entry._id}`}
-                key={entry._id}
-                className={`rounded-xl border text-white p-5 hover:shadow-md transition-all duration-200 ${cardClass}`}
-              >
-                {/* Theme icon indicator */}
-                {entry.theme && (
-                  <div className="absolute top-3 right-3 opacity-70">
-                    <span
-                      role="img"
-                      aria-label="theme-icon"
-                      className="text-lg"
-                    >
-                      {currentTheme.icon}
-                    </span>
-                  </div>
-                )}
-
-                {/* Title with decorative underline */}
-                <h3 className="text-lg font-semibold mb-2 truncate relative">
-                  {entry.title || "Untitled Entry"}
-                  <span className="absolute bottom-0 left-0 w-16 h-0.5 bg-current opacity-60"></span>
-                </h3>
-
-                {/* Date with theme icon */}
-                <p className="text-xs mb-3 flex items-center gap-1">
-                  <span role="img" aria-label="date" className="text-xs">
-                    {currentTheme.dateIcon}
-                  </span>
-                  {formatDate(entry.date)}
-                </p>
-
-                {/* Mood badge with enhanced styling */}
-                <div className="flex gap-1">
-                  {entry.mood && (
-                    <span
-                      className="inline-block text-xs font-medium text-white px-2 py-1 rounded-full mb-3 shadow-sm"
-                      style={{
-                        backgroundColor: moodData?.color || "#2e7d32",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                      }}
-                    >
-                      {moodData?.emoji} {entry.mood}
-                    </span>
-                  )}
-
-                  {/* Tags */}
-                  {entry.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {entry.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs px-2 py-0.5 rounded bg-[var(--highlight)]  opacity-80 border border-current/20"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Content Preview with themed divider */}
-                <div className="relative">
-                  <div className="absolute left-0 top-0 w-1 h-full bg-current/30 rounded"></div>
-                  <p className="text-sm line-clamp-3 opacity-90 pl-3">
-                    {entry.content || "No content available."}
-                  </p>
-                </div>
-
-                {/* Read more indicator with theme-specific text */}
-                <div className="mt-3 text-xs font-medium flex items-center justify-end theme-accent">
-                  <span>{currentTheme.readMoreText}</span>
-                  <span className="ml-1">→</span>
-                </div>
-              </Link>
-            );
-          })}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+          {entries.map((entry) => (
+            <JournalCard
+              key={entry._id}
+              entry={entry}
+              moods={moods}
+              formatDate={formatDate}
+              getThemeDetails={getThemeDetails}
+              getCardClass={getCardClass}
+              className="h-full transition-transform duration-200 hover:scale-105"
+            />
+          ))}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

@@ -4,115 +4,524 @@
 /* Reset for sharp corners */
 * {
   border-radius: 0 !important;
-  /* font-family: serif !important; */
-  font-family: "Merriweather", serif;
+  font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
+  font-style: normal;
 }
 
-/* CSS Variables for Dark/Light Mode */
+button:hover {
+  cursor: pointer;
+}
+
 :root {
-  --bg-primary: #f3f3f3;
-  --bg-secondary: #ffffff;
-  --bg-navbar: #e0e0e0;
-  --text-primary: #333333;
-  --text-secondary: #666666;
+  --bg-navbar: #ffffff; /* Bright clean navbar */
+  --bg-primary: #f6f8fa; /* Very soft neutral for main background */
+  --bg-secondary: #e9eff3; /* Muted bluish-gray for sections */
+
+  --text-primary: #2c2c2c;
+  --text-secondary: #6e6e6e;
+  --text-journal-title: #ffffff;
+
   --accent: #5999a8;
-  --accent-rgb: 112, 178, 192;
-  --border: #c8c7c7;
-  --shadow: rgba(0, 0, 0, 0.1);
-  --highlight: #f5a623;
-  --highlight-rgb: 245, 166, 35;
+  --accent-rgb: 89, 153, 168;
+
+  --highlight: #a3cbb3;
+  --highlight-rgb: 163, 203, 179;
+
+  --border: #dcdcdc;
+  --shadow: rgba(0, 0, 0, 0.05);
+
+  --card-bg: #ffffff;
+  --card-txt: #222222;
 }
 
 .dark {
-  --bg-primary: #1f1f1f;
-  --bg-secondary: #252525;
-  --bg-navbar: #1a1a1a;
-  --text-primary: #f0f0f0;
+  --bg-navbar: #121212; /* Pitch dark navbar */
+  --bg-primary: #1f1f1f; /* Base background */
+  --bg-secondary: #292c2f; /* Slight contrast for sections */
+
+  --text-primary: #f5f5f5;
   --text-secondary: #aaaaaa;
+  --text-journal-title: #ffffff;
+
   --accent: #70b2c0;
   --accent-rgb: 112, 178, 192;
-  --border: #4f4f4f;
+
+  --highlight: #9bc8b2;
+  --highlight-rgb: 155, 200, 178;
+
+  --border: #3a3a3a;
   --shadow: rgba(0, 0, 0, 0.2);
-  --highlight: #f5a623;
-  --highlight-rgb: 245, 166, 35;
+
+  --card-bg: #2b2b2b;
+  --card-txt: #ffffff;
 }
 
-.card-light {
-  background-color: #fff5e1; /* Warm cream, like candlelit pages */
-  border: 1px solid #e8b923; /* Soft amber, like hearth glow */
-  box-shadow: 0 2px 4px rgba(232, 185, 35, 0.1); /* Faint amber glow */
-  border-radius: 8px;
-  padding: 16px;
+/* Concept Packs */
+.card-maple-wolly-toward-the-peaks {
+  background-image: url("./assets/concept_sheep.png");
+}
+.card-maple-wolly-glowpath-wanderers {
+  background-image: url("./assets/concept_sheep1.png");
+}
+.card-maple-wolly-dragons-lair {
+  background-image: url("./assets/concept_sheep2.png");
+}
+
+/* Seasonal */
+.card-christmas {
+  background-image: url("./assets/christmas.png");
 }
 
 .card-dark {
-  background-color: #2d283e; /* Muted purple, like a moonlit tome */
-  border: 1px solid #a6b1e1; /* Silvery lavender, like moonlight */
-  box-shadow: 0 2px 4px rgba(166, 177, 225, 0.15); /* Subtle purple glow */
-  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  color: var(--card-txt);
   padding: 16px;
 }
 
-/* FOREST */
-/*Halooween*/
-.card-forest,
-.card-halloween,
-.card-christmas,
-.card-ocean {
-  color: white !important;
-  background-size: cover;
-  background-position: center;
-  position: relative; /* Enables positioning of the pseudo-element */
+.card-forest {
+  background-image: url("./assets/forest.png");
 }
 
-.card-forest::before,
-.card-halloween::before,
-.card-christmas::before,
-.card-ocean::before {
+.card-ocean {
+  background-image: url("./assets/water.png");
+}
+
+.card-black {
+  background-image: url("./assets/black-n.png");
+}
+
+.card-calm-ocean {
+  background-image: url("./assets/calm-ocean-n.png");
+}
+
+.card-night-sky {
+  background-image: url("./assets/night-sky-n.png");
+}
+
+.card-pastel-sky {
+  background-image: url("./assets/pastel-sky-n.png");
+}
+
+.card-energetic-yellow {
+  background-image: url("./assets/energetic-yellow-n.png");
+}
+
+.card-cozy-room {
+  background-image: url("./assets/cozy-room-e.png");
+}
+
+.card-country-side {
+  background-image: url("./assets/country-side-e.png");
+}
+
+.card-magical-room {
+  background-image: url("./assets/magical-room-e.png");
+}
+
+.card-northern-lights {
+  background-image: url("./assets/nothern-lights-e.png");
+}
+
+.card-post-apocalyptic {
+  background-image: url("./assets/post-apocalyptic-e.png");
+}
+
+.card-space-observe {
+  background-image: url("./assets/space-observe-e.png");
+}
+
+.card-winter-cabin {
+  background-image: url("./assets/winter-cabin-e.png");
+}
+
+.card-elf-theme {
+  background-image: url("./assets/elf.png");
+}
+
+.card-waifu-theme {
+  background-image: url("./assets/wifu.png");
+}
+
+.card-default {
+  background-color: var(--accent);
+  color: var(--card-txt);
+}
+
+/* Enhanced Solid Color Cards with Dynamic Gradients and Subtle Texture */
+.card-solid-pink {
+  background: radial-gradient(
+    circle at 30% 20%,
+    #ff9ebc 0%,
+    #ff6b95 30%,
+    #a84869 70%,
+    #7b2d4a 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-pink::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.2
-  ); /* Light, snowy overlay for Christmas vibe */
-  z-index: 1; /* Overlay sits above the background image */
+  background: radial-gradient(
+    circle at 80% 80%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
 }
 
-/* Ensure content inside the card (if any) is above the overlay */
+.card-solid-blue {
+  background: radial-gradient(
+    circle at 40% 30%,
+    #6c8cff 0%,
+    #4a6bff 30%,
+    #2b305f 70%,
+    #1a2040 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-blue::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 20% 70%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-green {
+  background: radial-gradient(
+    circle at 50% 25%,
+    #74d3ae 0%,
+    #4db995 30%,
+    #1e4032 70%,
+    #0f2a1e 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-green::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 70% 30%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-lavender {
+  background: radial-gradient(
+    circle at 35% 40%,
+    #c3b1e1 0%,
+    #a68bd3 30%,
+    #3a2f4b 70%,
+    #2a1f3a 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-lavender::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 60% 20%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-peach {
+  background: radial-gradient(
+    circle at 45% 35%,
+    #ffccab 0%,
+    #ff9e6e 30%,
+    #a3552a 70%,
+    #7b3b1f 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-peach::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 30% 80%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-mint {
+  background: radial-gradient(
+    circle at 50% 30%,
+    #a0e8af 0%,
+    #71d48e 30%,
+    #2d5d52 70%,
+    #1c3b34 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-mint::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 75% 25%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-yellow {
+  background: radial-gradient(
+    circle at 40% 20%,
+    #ffe382 0%,
+    #ffcc33 30%,
+    #8a6a1e 70%,
+    #5f4a14 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-yellow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 25% 75%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-coral {
+  background: radial-gradient(
+    circle at 30% 50%,
+    #ff7e79 0%,
+    #ff4d47 30%,
+    #892c2c 70%,
+    #5e1f1f 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-coral::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 80% 30%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-lilac {
+  background: radial-gradient(
+    circle at 50% 40%,
+    #d8a7d7 0%,
+    #b57fb4 30%,
+    #633c6a 70%,
+    #3f2744 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-lilac::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 70% 60%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+.card-solid-aqua {
+  background: radial-gradient(
+    circle at 35% 45%,
+    #90e0ef 0%,
+    #56c7d9 30%,
+    #236a75 70%,
+    #174750 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.card-solid-aqua::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 20% 80%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  z-index: 1;
+}
+
+/* Common styling for all cards */
+.card-forest,
+.card-ocean,
+.card-black,
+.card-calm-ocean,
+.card-night-sky,
+.card-pastel-sky,
+.card-energetic-yellow,
+.card-cozy-room,
+.card-country-side,
+.card-magical-room,
+.card-northern-lights,
+.card-post-apocalyptic,
+.card-space-observe,
+.card-winter-cabin,
+.card-solid-pink,
+.card-solid-blue,
+.card-solid-green,
+.card-solid-lavender,
+.card-solid-peach,
+.card-solid-mint,
+.card-solid-yellow,
+.card-solid-coral,
+.card-solid-lilac,
+.card-solid-aqua,
+.card-maple-wolly-toward-the-peaks,
+.card-maple-wolly-glowpath-wanderers,
+.card-maple-wolly-dragons-lair,
+.card-christmas,
+.card-elf-theme,
+.card-waifu-theme,
+.card-default {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: white !important;
+}
+
+.card-forest::before,
+.card-ocean::before,
+.card-black::before,
+.card-calm-ocean::before,
+.card-night-sky::before,
+.card-pastel-sky::before,
+.card-energetic-yellow::before,
+.card-cozy-room::before,
+.card-country-side::before,
+.card-magical-room::before,
+.card-northern-lights::before,
+.card-post-apocalyptic::before,
+.card-space-observe::before,
+.card-winter-cabin::before,
+.card-solid-pink::before,
+.card-solid-blue::before,
+.card-solid-green::before,
+.card-solid-lavender::before,
+.card-solid-peach::before,
+.card-solid-mint::before,
+.card-solid-yellow::before,
+.card-solid-coral::before,
+.card-solid-lilac::before,
+.card-solid-aqua::before,
+.card-maple-wolly-toward-the-peaks::before,
+.card-maple-wolly-glowpath-wanderers::before,
+.card-maple-wolly-dragons-lair::before,
+.card-christmas::before,
+.card-elf-theme::before,
+.card-waifu-theme::before,
+.card-default::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
 .card-forest > *,
-.card-halloween > *,
+.card-ocean > *,
+.card-black > *,
+.card-calm-ocean > *,
+.card-night-sky > *,
+.card-pastel-sky > *,
+.card-energetic-yellow > *,
+.card-cozy-room > *,
+.card-country-side > *,
+.card-magical-room > *,
+.card-northern-lights > *,
+.card-post-apocalyptic > *,
+.card-space-observe > *,
+.card-winter-cabin > *,
+.card-solid-pink > *,
+.card-solid-blue > *,
+.card-solid-green > *,
+.card-solid-lavender > *,
+.card-solid-peach > *,
+.card-solid-mint > *,
+.card-solid-yellow > *,
+.card-solid-coral > *,
+.card-solid-lilac > *,
+.card-solid-aqua > *,
+.card-maple-wolly-toward-the-peaks > *,
+.card-maple-wolly-glowpath-wanderers > *,
+.card-maple-wolly-dragons-lair > *,
 .card-christmas > *,
-.card-ocean > * {
+.card-elf-theme > *,
+.card-waifu-theme > *,
+.card-default > * {
   position: relative;
   z-index: 2;
-}
-.card-forest {
-  border: 2px solid #00ccff;
-  background-image: url("./assets/forest.png");
-}
-/* OCEAN */
-.card-ocean {
-  border: 2px solid #00ccff;
-  background-image: url("./assets/water.png");
-}
-
-/*CHRISTMAS*/
-.card-christmas {
-  border: 2px solid #ffcc00;
-  background-image: url("./assets/christmas.png");
-}
-
-/*Halooween*/
-.card-halloween {
-  border: 2px solid #ffcc00;
-  background-image: url("./assets/halloween.png");
 }
 
 .text-primary {
@@ -164,7 +573,7 @@ body {
   padding: 8px 16px;
   border-radius: 6px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000; /* Increased z-index to ensure it’s above other elements */
+  z-index: 1000;
   display: flex;
   align-items: center;
   animation: fadeIn 0.3s ease-out forwards;

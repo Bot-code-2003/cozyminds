@@ -17,6 +17,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDarkMode } from "../../context/ThemeContext";
 import { useCoins } from "../../context/CoinContext";
 import Navbar from "./Navbar";
+import { getThemeDetails, getCardClass } from "./ThemeDetails";
+import JournalCard from "./JorunalCard";
 
 // Mood options with emojis, descriptions and colors
 const MOODS = [
@@ -24,19 +26,19 @@ const MOODS = [
     emoji: "😄",
     name: "Happy",
     description: "Feeling joyful and content",
-    color: "#70B2C0",
+    color: "#3EACA8",
   },
   {
     emoji: "😐",
     name: "Neutral",
     description: "Neither good nor bad",
-    color: "#83C5BE",
+    color: "#547AA5",
   },
   {
     emoji: "☹️",
     name: "Sad",
     description: "Feeling down or blue",
-    color: "#7A82AB",
+    color: "#6A67CE",
   },
   {
     emoji: "😡",
@@ -48,55 +50,27 @@ const MOODS = [
     emoji: "😰",
     name: "Anxious",
     description: "Worried or nervous",
-    color: "#BC96E6",
+    color: "#9B72CF",
   },
   {
     emoji: "🥱",
     name: "Tired",
     description: "Low energy or exhausted",
-    color: "#8D99AE",
+    color: "#718EBC",
   },
   {
     emoji: "🤔",
     name: "Reflective",
     description: "Thoughtful and introspective",
-    color: "#81B29A",
+    color: "#5D8A66",
   },
   {
     emoji: "🥳",
     name: "Excited",
     description: "Enthusiastic and energized",
-    color: "#F9C74F",
+    color: "#F2B147",
   },
 ];
-
-const themeDetails = {
-  theme_forest: {
-    icon: "🌲",
-    dateIcon: "🍃",
-    readMoreText: "Wander deeper",
-  },
-  theme_ocean: {
-    icon: "🐠",
-    dateIcon: "🫧",
-    readMoreText: "Dive deeper",
-  },
-  theme_christmas: {
-    icon: "🎄",
-    dateIcon: "❄️",
-    readMoreText: "Unwrap entry",
-  },
-  theme_halloween: {
-    icon: "🎃",
-    dateIcon: "👻",
-    readMoreText: "Enter if you dare",
-  },
-  theme_pets: {
-    icon: "🐶",
-    dateIcon: "🐕",
-    readMoreText: "Pet entry",
-  },
-};
 
 const JournalEntries = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -105,32 +79,6 @@ const JournalEntries = () => {
   const navigate = useNavigate();
   const { darkMode } = useDarkMode();
   const { inventory } = useCoins();
-
-  const getCardClass = (theme) => {
-    if (theme === "theme_forest") {
-      return "card-forest";
-    } else if (theme === "theme_ocean") {
-      return "card-ocean";
-    } else if (theme === "theme_christmas") {
-      return "card-christmas";
-    } else if (theme === "theme_halloween") {
-      return "card-halloween";
-    } else if (theme === "theme_pets") {
-      return "card-pets";
-    } else {
-      return darkMode ? "card-dark" : "card-light";
-    }
-  };
-
-  const getThemeDetails = (theme) => {
-    return (
-      themeDetails[theme] || {
-        icon: "📝",
-        dateIcon: "📅",
-        readMoreText: "Read more",
-      }
-    );
-  };
 
   // State management
   const [journalEntries, setJournalEntries] = useState([]);
@@ -167,7 +115,7 @@ const JournalEntries = () => {
         }
 
         const response = await API.get(
-          `/journal/journals/${user._id}/collection/${decodedCollection}`
+          `/journals/${user._id}/collection/${decodedCollection}`
         );
         const journals = response.data.journals || [];
         setJournalEntries(journals);
@@ -254,7 +202,7 @@ const JournalEntries = () => {
   const deleteEntry = async (id) => {
     if (window.confirm("Are you sure you want to delete this journal entry?")) {
       try {
-        await API.delete(`/journal/journal/${id}`);
+        await API.delete(`/journal/${id}`);
         setJournalEntries((prevEntries) =>
           prevEntries.filter((entry) => entry._id !== id)
         );
@@ -286,11 +234,6 @@ const JournalEntries = () => {
     });
   };
 
-  const getMoodDetail = (moodName, property) => {
-    const mood = MOODS.find((m) => m.name === moodName);
-    return mood ? mood[property] : property === "color" ? "#CCCCCC" : "😶";
-  };
-
   const toggleSortOrder = () =>
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 
@@ -313,6 +256,29 @@ const JournalEntries = () => {
   };
 
   const allTags = getAllTags();
+
+  // Empty state component
+  const EmptyState = () => (
+    <div className="p-8 text-center border border-[var(--border)] bg-[var(--bg-secondary)] rounded-xl">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--accent-light)] mb-4">
+        <Calendar size={24} className="text-[var(--accent)]" />
+      </div>
+      <p className="text-[var(--text-primary)] text-lg font-medium mb-2">
+        No entries found.
+      </p>
+      <p className="text-[var(--text-secondary)] mb-6">
+        {journalEntries.length
+          ? "Try adjusting your filters or search terms."
+          : "Start journaling to create your first entry."}
+      </p>
+      <Link
+        to="/journaling-alt"
+        className="px-5 py-2.5 bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] rounded-md transition-all duration-300 shadow-md hover:shadow-lg"
+      >
+        New Entry
+      </Link>
+    </div>
+  );
 
   return (
     <div>
@@ -344,7 +310,10 @@ const JournalEntries = () => {
         </Link>
 
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-          <h2 className="text-xl font-bold">{decodedCollection} Collection</h2>
+          <h2 className="text-xl font-bold relative inline-block">
+            {decodedCollection} Collection
+            <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-[var(--accent)] opacity-60 rounded-full"></span>
+          </h2>
         </div>
 
         {/* Filters and search */}
@@ -359,14 +328,14 @@ const JournalEntries = () => {
               placeholder="Search entries..."
               value={filters.query}
               onChange={(e) => updateFilter("query", e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--border)] focus:outline-none"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
             />
           </div>
 
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center px-3 py-2 border border-[var(--border)]"
+              className="flex items-center px-3 py-2 border border-[var(--border)] rounded-md hover:bg-[var(--bg-secondary)]"
             >
               <Filter size={16} className="mr-2 opacity-70" />
               <span>Filters</span>
@@ -376,7 +345,7 @@ const JournalEntries = () => {
             <select
               value={filters.period}
               onChange={(e) => updateFilter("period", e.target.value)}
-              className="px-3 py-2 border border-[var(--border)] focus:outline-none appearance-none pr-8 text-[var(--text-secondary)]"
+              className="px-3 py-2 border border-[var(--border)] rounded-md focus:outline-none appearance-none pr-8 text-[var(--text-secondary)]"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -386,7 +355,7 @@ const JournalEntries = () => {
 
             <button
               onClick={toggleSortOrder}
-              className="flex items-center px-3 py-2 border border-[var(--border)]"
+              className="flex items-center px-3 py-2 border border-[var(--border)] rounded-md hover:bg-[var(--bg-secondary)]"
               title={sortOrder === "desc" ? "Newest first" : "Oldest first"}
             >
               {sortOrder === "desc" ? (
@@ -403,13 +372,13 @@ const JournalEntries = () => {
 
         {/* Expanded filters */}
         {showFilters && (
-          <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-4 mb-6 animate-fadeIn">
+          <div className="bg-[var(--bg-secondary)] border border-[var(--border)] p-4 mb-6 rounded-lg animate-fadeIn">
             <div className="mb-4">
               <h3 className="text-sm font-medium mb-2">Filter by Mood</h3>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => updateFilter("mood", null)}
-                  className={`px-3 py-1 text-xs border ${
+                  className={`px-3 py-1 text-xs rounded-full ${
                     !filters.mood
                       ? "bg-[var(--accent)] text-white"
                       : "bg-[var(--bg-secondary)] border border-[var(--border)]"
@@ -421,7 +390,7 @@ const JournalEntries = () => {
                   <button
                     key={mood.name}
                     onClick={() => updateFilter("mood", mood.name)}
-                    className={`flex items-center px-3 py-1 text-xs border ${
+                    className={`flex items-center px-3 py-1 text-xs rounded-full ${
                       filters.mood === mood.name
                         ? "bg-[var(--accent)] text-white"
                         : "bg-[var(--bg-secondary)] border-[var(--border)]"
@@ -440,7 +409,7 @@ const JournalEntries = () => {
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => updateFilter("tag", null)}
-                    className={`px-3 py-1 text-xs border ${
+                    className={`px-3 py-1 text-xs rounded-full ${
                       !filters.tag
                         ? "bg-[var(--accent)] text-white"
                         : "bg-[var(--bg-secondary)] border-[var(--border)]"
@@ -452,7 +421,7 @@ const JournalEntries = () => {
                     <button
                       key={tag}
                       onClick={() => updateFilter("tag", tag)}
-                      className={`flex items-center px-3 py-1 text-xs border ${
+                      className={`flex items-center px-3 py-1 text-xs rounded-full ${
                         filters.tag === tag
                           ? "bg-[var(--accent)] text-white"
                           : "bg-[var(--bg-secondary)] border-[var(--border)]"
@@ -469,12 +438,16 @@ const JournalEntries = () => {
         )}
 
         {/* Loading state */}
-        {isLoading && <p className="text-lg">Loading journal entries...</p>}
+        {isLoading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent)]"></div>
+          </div>
+        )}
 
         {/* Error state */}
         {error && (
-          <div>
-            <p className="text-lg mb-2">Error</p>
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <p className="text-lg font-medium mb-2">Error</p>
             <p className="text-[var(--text-secondary)]">{error}</p>
           </div>
         )}
@@ -486,107 +459,19 @@ const JournalEntries = () => {
               Entries ({filteredEntries.length})
             </h2>
             {filteredEntries.length === 0 ? (
-              <div className="p-6 text-center border border-[var(--border)] bg-[var(--bg-secondary)] rounded-xl">
-                <p className="text-[var(--text-primary)] mb-2">
-                  No entries found.
-                </p>
-                <p className="text-[var(--text-secondary)] mb-4">
-                  {journalEntries.length
-                    ? "Adjust filters or search."
-                    : "Start journaling."}
-                </p>
-                <Link
-                  to="/journaling-alt"
-                  className="px-4 py-2 border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--text-primary)] rounded"
-                >
-                  New Entry
-                </Link>
-              </div>
+              <EmptyState />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {currentEntries.map((entry) => {
-                  const moodData = MOODS.find((m) => m.name === entry.mood);
-                  const currentTheme = getThemeDetails(entry.theme);
-                  const cardClass = getCardClass(entry.theme);
-
-                  return (
-                    <Link
-                      to={`/journal/${entry._id}`}
-                      key={entry._id}
-                      className={`rounded-xl border p-5 hover:shadow-md transition-all duration-200 ${cardClass}`}
-                    >
-                      {/* Theme icon indicator */}
-                      {entry.theme && (
-                        <div className="absolute top-3 right-3 opacity-70">
-                          <span
-                            role="img"
-                            aria-label="theme-icon"
-                            className="text-lg"
-                          >
-                            {currentTheme.icon}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Title with decorative underline */}
-                      <h3 className="text-lg font-semibold mb-2 truncate relative">
-                        {entry.title || "Untitled Entry"}
-                        <span className="absolute bottom-0 left-0 w-16 h-0.5 bg-current opacity-60"></span>
-                      </h3>
-
-                      {/* Date with theme icon */}
-                      <p className="text-xs  mb-3 flex items-center gap-1">
-                        <span role="img" aria-label="date" className="text-xs">
-                          {currentTheme.dateIcon}
-                        </span>
-                        {formatDate(entry.date)}
-                      </p>
-
-                      {/* Mood badge with enhanced styling */}
-                      <div className="flex gap-1">
-                        {entry.mood && (
-                          <span
-                            className="inline-block text-xs font-medium text-white px-2 py-1 rounded-full mb-3 shadow-sm"
-                            style={{
-                              backgroundColor: moodData?.color || "#2e7d32",
-                              border: "1px solid rgba(255,255,255,0.2)",
-                            }}
-                          >
-                            {moodData?.emoji} {entry.mood}
-                          </span>
-                        )}
-
-                        {/* Tags */}
-                        {entry.tags?.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {entry.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="text-xs px-2 py-0.5 rounded bg-[var(--highlight)]  opacity-80 border border-current/20"
-                              >
-                                #{tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content Preview with themed divider */}
-                      <div className="relative">
-                        <div className="absolute left-0 top-0 w-1 h-full bg-current/30 rounded"></div>
-                        <p className="text-sm line-clamp-3 opacity-90 pl-3">
-                          {entry.content || "No content available."}
-                        </p>
-                      </div>
-
-                      {/* Read more indicator with theme-specific text */}
-                      <div className="mt-3 text-xs font-medium flex items-center justify-end theme-accent">
-                        <span>{currentTheme.readMoreText}</span>
-                        <span className="ml-1">→</span>
-                      </div>
-                    </Link>
-                  );
-                })}
+                {currentEntries.map((entry) => (
+                  <JournalCard
+                    key={entry._id}
+                    entry={entry}
+                    moods={MOODS}
+                    formatDate={formatDate}
+                    getThemeDetails={getThemeDetails}
+                    getCardClass={getCardClass}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -595,7 +480,7 @@ const JournalEntries = () => {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-8">
-            <div className="flex items-center">
+            <div className="flex items-center bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg overflow-hidden">
               <button
                 onClick={() => paginate(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
@@ -608,7 +493,7 @@ const JournalEntries = () => {
                 <ArrowLeft size={16} />
               </button>
 
-              <div className="mx-4">
+              <div className="mx-4 font-medium">
                 Page {currentPage} of {totalPages}
               </div>
 
@@ -631,9 +516,9 @@ const JournalEntries = () => {
       {/* Mobile action button */}
       <Link
         to="/journaling-alt"
-        className="md:hidden fixed bottom-6 right-6 w-12 h-12 bg-[var(--accent)] flex items-center justify-center shadow-elegant"
+        className="md:hidden fixed bottom-6 right-6 w-12 h-12 bg-[var(--accent)] flex items-center justify-center rounded-full shadow-lg text-white"
       >
-        <Calendar size={24} className="text-white" />
+        <Calendar size={24} />
       </Link>
     </div>
   );

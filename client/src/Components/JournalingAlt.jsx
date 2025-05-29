@@ -7,6 +7,7 @@ import { Save, Check, X, Tag, FolderPlus } from "lucide-react";
 import { useDarkMode } from "../context/ThemeContext";
 import { useCoins } from "../context/CoinContext";
 import Navbar from "./Dashboard/Navbar";
+import { getThemeDetails } from "./Dashboard/ThemeDetails";
 
 const JournalingAlt = () => {
   const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -51,35 +52,6 @@ const JournalingAlt = () => {
     { emoji: "🥳", name: "Excited", color: "#F4A261" },
   ];
 
-  // Theme details
-  const themeDetails = {
-    theme_forest: {
-      name: "Forest Theme",
-      icon: "🌲",
-      description: "Serene forest visuals",
-    },
-    theme_ocean: {
-      name: "Ocean Theme",
-      icon: "🌊",
-      description: "Tranquil ocean waves",
-    },
-    theme_christmas: {
-      name: "Christmas Theme",
-      icon: "🎄",
-      description: "Festive Christmas theme",
-    },
-    theme_halloween: {
-      name: "Halloween Theme",
-      icon: "🎃",
-      description: "Spooky Halloween theme",
-    },
-    theme_pets: {
-      name: "Pets Theme",
-      icon: "🐶",
-      description: "Furry friends theme",
-    },
-  };
-
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
   const handleLogout = () => {
@@ -99,14 +71,15 @@ const JournalingAlt = () => {
           .filter((item) => item.category === "theme")
           .map((item) => ({
             id: item.id,
-            name: themeDetails[item.id]?.name || item.name,
-            icon: themeDetails[item.id]?.icon || item.image,
-            description: themeDetails[item.id]?.description || item.description,
+            name: getThemeDetails(item.id).icon ? item.name : item.name,
+            icon: getThemeDetails(item.id).icon || item.image,
+            description:
+              getThemeDetails(item.id).readMoreText || item.description,
           }));
 
         setAvailableThemes(themes);
 
-        const response = await API.get(`/journal/journals/${userData._id}`);
+        const response = await API.get(`/journals/${userData._id}`);
         const journals = response.data.journals || [];
 
         // Get unique tags
@@ -230,7 +203,7 @@ const JournalingAlt = () => {
         collections: selectedCollections,
         theme: selectedTheme, // Add selected theme to journal entry
       };
-      await API.post("/journal/saveJournal", journalEntry);
+      await API.post("/saveJournal", journalEntry);
       setIsSaved(true);
       setTimeout(() => navigate("/collections"), 1000);
     } catch (error) {
@@ -363,7 +336,9 @@ const JournalingAlt = () => {
                   Select Theme
                   {selectedTheme && (
                     <span className="ml-1.5 bg-[var(--accent)] text-white text-xs px-1.5 py-0.5 rounded-full">
-                      {themeDetails[selectedTheme]?.name || "Custom"}
+                      {getThemeDetails(selectedTheme).icon
+                        ? selectedTheme.replace("theme_", "")
+                        : "Custom"}
                     </span>
                   )}
                 </h3>
@@ -398,7 +373,8 @@ const JournalingAlt = () => {
 
                 {selectedTheme && (
                   <div className="mt-2 text-xs text-[var(--text-secondary)] italic">
-                    {themeDetails[selectedTheme]?.description || "Custom theme"}
+                    {getThemeDetails(selectedTheme).readMoreText ||
+                      "Custom theme"}
                   </div>
                 )}
               </div>

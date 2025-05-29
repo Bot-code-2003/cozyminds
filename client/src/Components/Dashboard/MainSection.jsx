@@ -1,10 +1,17 @@
-import { Calendar, BarChart2, Plus, User, BookOpen } from "lucide-react";
+"use client";
+
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  Plus,
+  User,
+  BookOpen,
+  Sparkles,
+  TrendingUp,
+  Calendar,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import StreakCard from "../StreakCard";
-import Journaling from "./assets/journaling3.png";
-import Library from "./assets/Library5.png";
-// import journalEntries from "./journalEntries";
-import Settings from "./assets/settings5.png";
 
 const MainSection = ({
   darkMode,
@@ -16,89 +23,110 @@ const MainSection = ({
   const quickActions = [
     {
       to: "/journaling-alt",
-      icon: <Plus size={24} />,
+      icon: <Plus size={28} />,
       title: "New Entry",
-      description: "Start writing",
-      backgroundImage: Journaling,
+      description: "Start writing today",
+      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
     },
     {
       to: "/profile-settings",
-      icon: <User size={24} />,
+      icon: <User size={28} />,
       title: "Profile",
-      description: "Your settings",
-      backgroundImage: Settings,
+      description: "Personalize your space",
+      gradient: "linear-gradient(135deg, #f97316 0%, #facc15 100%)",
     },
     {
       to: "/collections",
-      icon: <BookOpen size={24} />,
+      icon: <BookOpen size={28} />,
       title: "Library",
-      description: "Browse entries",
-      backgroundImage: Library,
+      description: "Revisit your stories",
+      gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
     },
   ];
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-0 py-8">
+    <main className="max-w-6xl mx-auto py-8 md:py-12">
       {/* Welcome Section */}
-      <div className="mb-10 text-center">
-        <h1 className={`text-4xl `}>
-          Welcome,{" "}
-          <span className="text-[var(--accent)]">
-            {userData?.nickname || "Traveler"}
-          </span>
-        </h1>
-        <p
-          className={`mt-2 text-sm font-sans uppercase tracking-wide text-[var(--text-secondary)]`}
-        >
-          Your personal journal
-        </p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-12 text-center relative"
+      >
+        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              rotate: [0, 5, -5, 0],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {/* <Sparkles size={120} className="text-[var(--accent)]" /> */}
+          </motion.div>
+        </div>
+        <div className="relative">
+          <h1 className="text-3xl md:text-5xl font-serif font-bold mb-3 bg-gradient-to-r from-[var(--accent)] to-[var(--text-primary)] bg-clip-text text-transparent">
+            Welcome, {userData?.nickname || "Traveler"}
+          </h1>
+        </div>
+      </motion.div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {quickActions.map((action, index) => (
-          <Link
-            key={index}
-            to={action.to}
-            className="block relative h-56 w-full overflow-hidden transform transition-transform hover:scale-102"
-            style={{
-              backgroundImage: `url("${action.backgroundImage}")`,
-              backgroundSize: "contain",
-              backgroundPosition: "center",
-            }}
-          >
-            {/* Overlay to ensure text readability */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: darkMode
-                  ? "linear-gradient(to top, rgba(30, 30, 50, 0.65), rgba(30, 30, 50, 0.2))"
-                  : "linear-gradient(to top, rgba(30, 30, 50, 0.35), rgba(220, 210, 255, 0.2))",
-              }}
-            />
-
-            {/* Content overlay */}
-            <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
-              <div
-                className={`p-2 mb-3 flex items-center justify-center w-10 h-10 bg-[var(--accent)]`}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <AnimatePresence>
+          {quickActions.map((action, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <Link
+                to={action.to}
+                className="block relative p-6 bg-[var(--bg-secondary)] rounded-xl shadow-md overflow-hidden group"
               >
-                {action.icon}
-              </div>
-
-              <h3 className={`text-xl font-bold mb-1 `}>{action.title}</h3>
-
-              <p className={`text-xs font-sans tracking-wide `}>
-                {action.description}
-              </p>
-            </div>
-          </Link>
-        ))}
+                {/* Gradient Background */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                  style={{ background: action.gradient }}
+                />
+                {/* Content */}
+                <div className="relative flex flex-col gap-4">
+                  <div
+                    className="w-12 h-12 rounded-lg flex items-center justify-center text-white"
+                    style={{ background: action.gradient }}
+                  >
+                    {action.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-1">
+                      {action.title}
+                    </h3>
+                    <p className="text-sm text-[var(--text-secondary)]">
+                      {action.description}
+                    </p>
+                  </div>
+                </div>
+                {/* Subtle Border Animation */}
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[var(--accent)]/30 rounded-xl transition-all duration-300" />
+              </Link>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
-      <StreakCard
-        journalEntries={journalEntries}
-        wordCountStats={wordCountStats}
-      />
+      {/* StreakCard */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <StreakCard
+          journalEntries={journalEntries}
+          wordCountStats={wordCountStats}
+        />
+      </motion.div>
     </main>
   );
 };

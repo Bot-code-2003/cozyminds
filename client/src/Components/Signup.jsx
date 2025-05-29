@@ -41,7 +41,7 @@ const Signup = ({ setUser }) => {
     setError(null);
 
     try {
-      const res = await API.post("/user/signup", form);
+      const res = await API.post("/signup", form);
       const user = res.data.user;
       setUser(user);
       sessionStorage.setItem("user", JSON.stringify(user));

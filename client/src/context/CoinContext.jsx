@@ -15,6 +15,7 @@ export const CoinProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [showCoinPopup, setShowCoinPopup] = useState(false);
   const [coinsEarned, setCoinsEarned] = useState(0);
+  const [activeMailTheme, setActiveMailTheme] = useState(null);
 
   // Function to sync user data from session storage
   const syncUserData = () => {
@@ -23,6 +24,7 @@ export const CoinProvider = ({ children }) => {
       setUserData(user);
       setCoins(user.coins || 0);
       setInventory(user.inventory || []);
+      setActiveMailTheme(user.activeMailTheme || null);
       return user;
     }
     return null;
@@ -81,7 +83,7 @@ export const CoinProvider = ({ children }) => {
 
       const newCoins = (user.coins || 0) + coinsToAdd;
 
-      const response = await API.put(`/user/user/${userId}`, {
+      const response = await API.put(`/user/${userId}`, {
         coins: newCoins,
         lastVisited: new Date(),
       });
@@ -110,42 +112,126 @@ export const CoinProvider = ({ children }) => {
 
   const purchaseItem = async (item) => {
     try {
+      // Validate coins
       if (coins < item.price) {
         return { success: false, message: "Not enough coins" };
       }
 
-      const user = JSON.parse(sessionStorage.getItem("user") || "null");
-      if (!user) return { success: false, message: "User not logged in" };
+      // Fetch user from sessionStorage
+      let user = JSON.parse(sessionStorage.getItem("user") || "null");
+      if (!user) {
+        return { success: false, message: "User not logged in" };
+      }
 
       const newCoins = coins - item.price;
       const newInventory = [...inventory];
-      const existingItem = newInventory.find((i) => i.id === item.id);
 
-      if (existingItem) {
-        existingItem.quantity = (existingItem.quantity || 1) + 1;
+      // 🧩 Handle concept pack
+      if (
+        item.category === "conceptpack" &&
+        Array.isArray(item.conceptImages) &&
+        item.conceptImages.length > 0
+      ) {
+        // Add each concept image as a separate inventory item
+        item.conceptImages.forEach((img) => {
+          newInventory.push({
+            id: img.id,
+            name: img.name,
+            description: img.description,
+            image: img.image || "/api/placeholder/400/300",
+            category: "conceptpack",
+            quantity: 1,
+            isEmoji: false,
+            parentPack: img.parentPack,
+          });
+        });
+      } else if (item.category === "mailtheme") {
+        // Add mail theme
+        newInventory.push({
+          ...item,
+          quantity: 1,
+          isEmoji: item.isEmoji ?? false,
+        });
+
+        // Set as active mail theme if none is set
+        if (!user.activeMailTheme && !activeMailTheme) {
+          user.activeMailTheme = item.id;
+        }
       } else {
-        newInventory.push({ ...item, quantity: 1 });
+        // 🪄 Regular item
+        const existingItemIndex = newInventory.findIndex(
+          (i) => i.id === item.id
+        );
+        if (existingItemIndex !== -1) {
+          newInventory[existingItemIndex] = {
+            ...newInventory[existingItemIndex],
+            quantity: (newInventory[existingItemIndex].quantity || 1) + 1,
+          };
+        } else {
+          newInventory.push({
+            ...item,
+            quantity: 1,
+            isEmoji: item.isEmoji ?? false,
+          });
+        }
       }
 
-      const response = await API.put(`/user/user/${user._id}`, {
+      // 💾 Prepare updated user
+      const updatedUser = {
+        ...user,
         coins: newCoins,
         inventory: newInventory,
-      });
+        activeMailTheme: user.activeMailTheme || activeMailTheme,
+      };
 
+      // Update backend
+      const response = await API.put(`/user/${user._id}`, updatedUser);
+      if (!response.data || response.status >= 400) {
+        throw new Error("Failed to update user data on server");
+      }
+
+      // Update client state
       setCoins(newCoins);
       setInventory(newInventory);
-      const updatedUser = { ...user, coins: newCoins, inventory: newInventory };
+      setUserData(updatedUser);
       sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
-      return { success: true, message: "Item purchased successfully" };
+      return { success: true, message: `Successfully purchased ${item.name}!` };
     } catch (error) {
       console.error("Error purchasing item:", error);
-      return { success: false, message: "Error purchasing item" };
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to purchase item";
+      return { success: false, message };
     }
   };
 
   const syncCoinsFromStorage = () => {
     syncUserData();
+  };
+
+  const updateUserData = async (updatedUser) => {
+    try {
+      if (!updatedUser || !updatedUser._id) return false;
+
+      // Update in API
+      await API.put(`/user/${updatedUser._id}`, updatedUser);
+
+      // Update in session storage
+      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // Update state
+      setUserData(updatedUser);
+      setCoins(updatedUser.coins || 0);
+      setInventory(updatedUser.inventory || []);
+      setActiveMailTheme(updatedUser.activeMailTheme || null);
+
+      return true;
+    } catch (error) {
+      console.error("Error updating user data:", error);
+      return false;
+    }
   };
 
   // Function to manually trigger coin popup (for testing or other components)
@@ -171,6 +257,9 @@ export const CoinProvider = ({ children }) => {
         showCoinPopup,
         coinsEarned,
         showCoinAward,
+        userData,
+        updateUserData,
+        activeMailTheme,
       }}
     >
       {children}
